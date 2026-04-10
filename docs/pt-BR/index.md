@@ -13,6 +13,8 @@ Esta é a árvore canônica de documentação em português brasileiro para o es
 - [Integrações](./integracoes.md)
 - [Módulos](./modulos.md)
 - [Administração](./admin.md)
+- [Administração: Anexo Governança Algorítmica](./governanca-algoritmica-admin.md)
+- [Administração: Anexo Política de Dados e Privacidade](./politica-dados-privacidade-admin.md)
 - [Guia do Usuário](./guia-do-usuario.md)
 - [Contribuição](./contribuicao.md)
 - [Roadmap](./roadmap.md)

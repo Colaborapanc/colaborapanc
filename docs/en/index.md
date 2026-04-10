@@ -13,6 +13,8 @@ This is the canonical English documentation tree for the current ColaboraPANC co
 - [Integrations](./integrations.md)
 - [Modules](./modules.md)
 - [Admin](./admin.md)
+- [Admin: Algorithmic Governance Annex](./admin-algorithmic-governance.md)
+- [Admin: Data & Privacy Annex](./admin-data-privacy-policy.md)
 - [User Guide](./user-guide.md)
 - [Contributing](./contributing.md)
 - [Roadmap](./roadmap.md)
