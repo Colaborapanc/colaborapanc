@@ -117,9 +117,14 @@ cd mobile && npm run test:ci
 
 ### Documentation
 
-- Write in Portuguese (PT-BR) for user-facing documentation.
-- Write in English for JOSS/SoftwareX materials and for code comments in exported APIs.
-- If a functionality is only partially implemented, explicitly mark it as `[PARCIALMENTE IMPLEMENTADO]` in docs.
+- All project documentation must be bilingual (PT-BR + EN), organized and standardized.
+- Prefer one of these patterns:
+  - Single file with `## Português (PT-BR)` and `## English (EN)` sections mirroring the same content.
+  - Pair of files with suffixes `.pt-BR.md` and `.en.md`, linked to each other at the top.
+- Keep both language versions functionally equivalent whenever documentation is updated.
+- Keep a consistent structure in both languages: objective, scope, prerequisites, steps, validation, and references.
+- If a functionality is only partially implemented, explicitly mark it as `[PARCIALMENTE IMPLEMENTADO]` (PT-BR) and `[PARTIALLY IMPLEMENTED]` (EN).
+- For the full style guide, follow `docs/documentacao_bilingue_padrao.md`.
 
 ---
 
@@ -141,7 +146,7 @@ cd mobile && npm run test:ci
 
 Documentation lives in `docs/`. When submitting a PR that changes behaviour:
 
-- Update the relevant `docs/*.md` file.
+- Update the relevant `docs/*.md` file in both PT-BR and EN according to the bilingual standard.
 - If the change affects API endpoints, update `docs/api_endpoints.md`.
 - If the change affects the scientific workflow, update `docs/fluxo_cientifico_do_sistema.md`.
 

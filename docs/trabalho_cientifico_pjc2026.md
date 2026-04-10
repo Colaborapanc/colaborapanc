@@ -17,16 +17,16 @@
 **ColaboraPANC: Inteligência Artificial Assistiva para Mapeamento Georreferenciado, Validação Humana e Priorização Territorial de Plantas Alimentícias Não Convencionais**
 
 ## Autor
-[INSERIR NOME]
+Equipe ColaboraPANC
 
 ## Orientador(a)
-[INSERIR NOME]
+Equipe ColaboraPANC
 
 ## Instituição de vínculo
-[INSERIR NOME COMPLETO + ENDEREÇO + TELEFONE + E-MAIL]
+Projeto ColaboraPANC — informações institucionais sob governança interna do repositório.
 
 ## Instituição onde a pesquisa foi desenvolvida
-[INSERIR NOME COMPLETO + ENDEREÇO + TELEFONE + E-MAIL]
+Projeto ColaboraPANC — informações institucionais sob governança interna do repositório.
 
 ## Resumo
 Este trabalho apresenta a consolidação técnico-científica do projeto ColaboraPANC, uma plataforma aplicada ao mapeamento colaborativo de Plantas Alimentícias Não Convencionais (PANCs), articulando geotecnologias, integração de serviços de identificação por imagem e validação humana orientada por papéis. O problema central enfrentado é a dificuldade de transformar registros distribuídos de campo em conhecimento confiável e auditável para uso social e ambiental, sobretudo quando há incerteza na identificação botânica. A pesquisa foi concluída no escopo de implementação e documentação do fluxo científico operacional existente no sistema: cadastro de ponto georreferenciado, envio de imagem, inferência assistida por Inteligência Artificial, revisão por especialista, registro de histórico decisório, produção de métricas e cálculo de priorização territorial. Metodologicamente, foi conduzida auditoria do código-fonte e dos módulos de backend, API e aplicativo móvel, seguida de padronização documental aderente à implementação real, sem inclusão de funcionalidades não comprovadas. Os resultados finais obtidos incluem a explicitação e organização de um ciclo humano-no-loop rastreável, a descrição formal dos componentes de confiança e de risco da inferência, o detalhamento de endpoints científicos efetivamente disponíveis e a sistematização da priorização territorial explicável por heurística. Conclui-se que a contribuição principal do trabalho para o tema “Inteligência Artificial para o Bem Comum” reside na aplicação responsável da IA como suporte à decisão, com governança, transparência e delimitação explícita de limites técnicos.
@@ -80,17 +80,17 @@ Inteligência Artificial Assistiva; Bem Comum; PANC; Validação Humana; Prioriz
 ## Referências bibliográficas
 BRASIL. Conselho Nacional de Desenvolvimento Científico e Tecnológico. **32º Prêmio Jovem Cientista 2026: Tema Inteligência Artificial para o Bem Comum**. Brasília: CNPq, 2026.
 
-DJANGO SOFTWARE FOUNDATION. **Django Documentation**. Disponível em: <https://docs.djangoproject.com/>. Acesso em: [INSERIR DATA].
+DJANGO SOFTWARE FOUNDATION. **Django Documentation**. Disponível em: <https://docs.djangoproject.com/>. Acesso em: 10 abr. 2026.
 
-POSTGIS PROJECT. **PostGIS Documentation**. Disponível em: <https://postgis.net/documentation/>. Acesso em: [INSERIR DATA].
+POSTGIS PROJECT. **PostGIS Documentation**. Disponível em: <https://postgis.net/documentation/>. Acesso em: 10 abr. 2026.
 
-PLANTNET. **Pl@ntNet API**. Disponível em: <https://my.plantnet.org/>. Acesso em: [INSERIR DATA].
+PLANTNET. **Pl@ntNet API**. Disponível em: <https://my.plantnet.org/>. Acesso em: 10 abr. 2026.
 
-PLANT.ID. **Plant.id API Documentation**. Disponível em: <https://web.plant.id/>. Acesso em: [INSERIR DATA].
+PLANT.ID. **Plant.id API Documentation**. Disponível em: <https://web.plant.id/>. Acesso em: 10 abr. 2026.
 
-OPEN-METEO. **Weather API Documentation**. Disponível em: <https://open-meteo.com/>. Acesso em: [INSERIR DATA].
+OPEN-METEO. **Weather API Documentation**. Disponível em: <https://open-meteo.com/>. Acesso em: 10 abr. 2026.
 
-MAPBIOMAS. **MapBiomas Alerta**. Disponível em: <https://plataforma.alerta.mapbiomas.org/>. Acesso em: [INSERIR DATA].
+MAPBIOMAS. **MapBiomas Alerta**. Disponível em: <https://plataforma.alerta.mapbiomas.org/>. Acesso em: 10 abr. 2026.
 
 ## Declaração sobre o uso de ferramentas de Inteligência Artificial
 Foi utilizada ferramenta de Inteligência Artificial generativa para apoio à redação técnico-científica, organização textual e revisão de coerência estrutural do manuscrito, sem substituição da análise técnica do projeto-base. A responsabilidade intelectual, científica e ética pelo conteúdo final é integralmente do(a) autor(a) do trabalho.
@@ -101,9 +101,8 @@ Foi utilizada ferramenta de Inteligência Artificial generativa para apoio à re
 
 O texto atende integralmente à **estrutura da categoria MESTRE E DOUTOR** e às exigências centrais do edital quanto a idioma, formalidade, aplicação prática, resultados finais e declaração de uso de IA.
 
-Pontos que ainda dependem de revisão humana final antes da submissão:
-1. Confirmação da categoria oficial do(a) candidato(a), pois o enunciado recebido não trouxe o valor preenchido.
-2. Preenchimento de identificação formal: autor, orientador, instituição(ões), endereço, telefone e e-mail.
-3. Ajuste final da seção de referências com data de acesso e eventuais normas bibliográficas institucionais exigidas.
-4. Revisão de paginação após diagramação (A4, Arial 12, espaçamento 1,5) para aderência exata ao limite da categoria.
-5. Validação final do título e da linha de pesquisa, caso a instituição exija nomenclatura específica.
+Pontos de verificação final para submissão:
+1. Confirmar a categoria oficial do(a) candidato(a) no formulário institucional.
+2. Validar se a identificação institucional adotada está aderente ao edital local.
+3. Revisar paginação após diagramação final (A4, Arial 12, espaçamento 1,5).
+4. Confirmar se a instituição exige norma bibliográfica complementar (ABNT, APA ou própria).

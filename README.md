@@ -100,6 +100,8 @@ pytest
 - [Troubleshooting](docs/troubleshooting.md)
 - [Roadmap](docs/roadmap.md)
 - [AR e Identificação Avançada](docs/feature_ar_identificacao.md)
+- [Padrão de documentação bilíngue / Bilingual documentation standard](docs/documentacao_bilingue_padrao.md)
+- [Verificação detalhada do sistema (2026-04-10)](docs/verificacao_detalhada_sistema_2026-04-10.md)
 
 ## Status do projeto
 Projeto funcional com núcleo científico implementado no backend; ainda há áreas com implementação parcial e heterogeneidade entre módulos legados e módulos novos.
