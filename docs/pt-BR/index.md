@@ -2,9 +2,9 @@
 
 > Troca de idioma: [Português (Brasil)](./index.md) | [English](../en/index.md)
 
-Este diretório é o conjunto canônico de documentação em português brasileiro para o estado atual do código do ColaboraPANC.
+Esta é a árvore canônica de documentação em português brasileiro para o estado atual do código do ColaboraPANC.
 
-## Navegação
+## Navegação principal
 
 - [Instalação](./instalacao.md)
 - [Implantação](./implantacao.md)
@@ -17,12 +17,30 @@ Este diretório é o conjunto canônico de documentação em português brasilei
 - [Contribuição](./contribuicao.md)
 - [Roadmap](./roadmap.md)
 - [FAQ](./faq.md)
+- [Fluxos Mobile e Recursos Avançados (Anexo Técnico)](./fluxos-mobile-avancados.md)
 
-## Escopo e rastreabilidade
+## O que estes documentos representam
 
-Este conjunto reflete componentes e testes existentes no repositório:
+Este conjunto canônico reflete comportamento ativo do sistema implementado no repositório, incluindo:
 
-- Mapa de URLs e rotas de API (`mapping/urls.py`, `config/urls.py`).
-- Módulos de domínio e serviços (`mapping/services/*`, `mapping/views*`, `mapping/models.py`).
-- Aplicativo mobile e scripts (`mobile/package.json`, `mobile/src/*`).
-- Suíte de testes (`tests/*.py`).
+- Composição de rotas web/API em Django + DRF.
+- Endpoints do fluxo científico para inferência de IA, fila de revisão, validação e histórico de decisões.
+- Capacidades ambientais/territoriais (MapBiomas e pipeline de alertas climáticos).
+- APIs de paridade mobile e integração com cliente Expo/React Native.
+- Módulos auxiliares de colaboração (notificações, conversas, gamificação, rotas, preferências).
+- Base atual de testes e operação.
+
+## Referências de código usadas para manter este índice aderente
+
+- Registro de URLs e endpoints: `mapping/urls.py`, `config/urls.py`.
+- Serviços e módulos de domínio: `mapping/services/`, `mapping/domains/`, `mapping/views*.py`, `mapping/models.py`.
+- Scripts/dependências do app mobile: `mobile/package.json`, `mobile/src/*`.
+- Suíte de testes: `tests/*.py`.
+
+## Pontos de entrada relacionados
+
+- Hub de documentação: [`docs/README.md`](../README.md)
+- README raiz do projeto (PT-BR): [`README.pt-BR.md`](../../README.pt-BR.md)
+- README raiz do projeto (EN): [`README.md`](../../README.md)
+- Índice legado em português: [`docs/pt/README.md`](../pt/README.md)
+- Índice legado em inglês: [`docs/en/README.md`](../en/README.md)
