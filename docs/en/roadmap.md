@@ -1,17 +1,19 @@
-# Roadmap (EN)
+# Roadmap
 
-> This is the English companion document for `docs/pt/roadmap.md`.
->
-> Last reviewed: 2026-04-10
+## Current Baseline (implemented)
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+- End-to-end scientific flow with inference/review/validation.
+- Operational integration monitoring endpoints.
+- Mobile parity APIs for identification and offline metadata.
+- Environmental modules for MapBiomas and climate alerts.
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/roadmap.md`](../pt/roadmap.md)
+## Near-Term Priorities
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
+- Improve observability for integration failures and retries.
+- Expand test coverage for permission and edge-case API behavior.
+- Continue documentation cleanup and reduce legacy duplication.
+- Improve mobile offline UX and package management traceability.
 
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Notes
+
+Legacy roadmap details remain available in `docs/en/roadmap.md` history and `docs/pt/roadmap.md`.

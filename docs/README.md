@@ -1,12 +1,14 @@
-# ColaboraPANC Docs Hub
+# ColaboraPANC Documentation Hub
 
-Escolha o idioma / Choose language:
+Choose language / Escolha o idioma:
 
-- 🇧🇷 Português: [docs/pt/README.md](./pt/README.md)
-- 🇺🇸 English: [docs/en/README.md](./en/README.md)
+- 🇺🇸 English: [`docs/en/index.md`](./en/index.md)
+- 🇧🇷 Português (Brasil): [`docs/pt-BR/index.md`](./pt-BR/index.md)
 
-## Estrutura
-- `docs/pt/`: documentação técnica em português.
-- `docs/en/`: documentação técnica em inglês.
-- `docs/academic/`: artefatos acadêmicos (paper, bib e metadados de citação).
-- `docs/internal/`: documentos internos de apoio.
+## Directory Structure
+
+- `docs/en/`: canonical English technical and functional documentation.
+- `docs/pt-BR/`: canonical Brazilian Portuguese technical and functional documentation.
+- `docs/academic/`: paper and citation artifacts.
+- `docs/internal/`: internal plans, audits, and verification logs.
+- `docs/pt/`: legacy Portuguese documentation set kept for historical traceability.

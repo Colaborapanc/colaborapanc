@@ -58,7 +58,7 @@ By contributing to this project, you agree to abide by our [Code of Conduct](COD
 
 ## Environment Setup
 
-Full instructions are available in [SETUP.md](SETUP.md) and [docs/instalacao_backend.md](docs/instalacao_backend.md).
+Full instructions are available in [README.md](README.md), [docs/en/installation.md](docs/en/installation.md), and [docs/pt-BR/instalacao.md](docs/pt-BR/instalacao.md).
 
 **Quick start (Docker recommended):**
 ```bash
@@ -72,7 +72,7 @@ docker compose up --build
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements_core.txt
 cp .env.example .env
-# Configure PostgreSQL + PostGIS (see SETUP.md)
+# Configure PostgreSQL + PostGIS (see docs installation guides)
 python manage.py migrate
 python manage.py runserver 0.0.0.0:8000
 ```
@@ -124,7 +124,7 @@ cd mobile && npm run test:ci
 - Keep both language versions functionally equivalent whenever documentation is updated.
 - Keep a consistent structure in both languages: objective, scope, prerequisites, steps, validation, and references.
 - If a functionality is only partially implemented, explicitly mark it as `[PARCIALMENTE IMPLEMENTADO]` (PT-BR) and `[PARTIALLY IMPLEMENTED]` (EN).
-- For the full style guide, follow `docs/documentacao_bilingue_padrao.md`.
+- For the current canonical bilingual structure, follow `docs/en/index.md` and `docs/pt-BR/index.md`.
 
 ---
 
@@ -147,8 +147,8 @@ cd mobile && npm run test:ci
 Documentation lives in `docs/`. When submitting a PR that changes behaviour:
 
 - Update the relevant `docs/*.md` file in both PT-BR and EN according to the bilingual standard.
-- If the change affects API endpoints, update `docs/api_endpoints.md`.
-- If the change affects the scientific workflow, update `docs/fluxo_cientifico_do_sistema.md`.
+- If the change affects API endpoints, update `docs/en/api.md` and `docs/pt-BR/api.md`.
+- If the change affects the scientific workflow, update `docs/en/modules.md` and `docs/pt-BR/modulos.md` plus any detailed legacy references when needed.
 
 ---
 

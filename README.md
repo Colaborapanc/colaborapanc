@@ -1,40 +1,36 @@
 # ColaboraPANC
 
-Plataforma colaborativa para mapeamento georreferenciado de PANCs com identificação assistida por IA, validação humana e análise territorial.
+> **Language / Idioma:** [English](./README.md) | [Português (Brasil)](./README.pt-BR.md)
 
-Collaborative platform for geo-referenced PANC mapping with AI-assisted identification, human validation, and territorial analysis.
+ColaboraPANC is an open-source collaborative platform for georeferenced mapping of Non-Conventional Food Plants (PANC), with AI-assisted identification, human review workflows, and environmental/territorial analysis.
 
-## Documentação / Documentation
+## Project Overview
 
-- 🇧🇷 **Português (guia principal):** [`docs/pt/README.md`](docs/pt/README.md)
-- 🇺🇸 **English (main guide):** [`docs/en/README.md`](docs/en/README.md)
-- 🌐 **Hub bilíngue:** [`docs/README.md`](docs/README.md)
+ColaboraPANC combines:
+- A Django + Django REST Framework backend for web and API workflows.
+- A PostgreSQL/PostGIS geospatial data layer.
+- An Expo/React Native mobile app.
+- Integration services for plant identification, taxonomic enrichment, climate alerts, and MapBiomas environmental alerts.
 
-### Associação entre versões PT/EN
-As versões PT e EN estão separadas em diretórios próprios e associadas por **mesmo nome de arquivo**:
+## Current Core Capabilities
 
-- `docs/pt/<arquivo>.md` ↔ `docs/en/<arquivo>.md`
+- Georeferenced PANC point submission and curation.
+- Scientific workflow: AI inference, review queue, validation decision, and decision history.
+- Mobile parity endpoints for image identification and offline base metadata/download.
+- Environmental and territorial modules (MapBiomas, climate alerts, territorial prioritization).
+- Auxiliary modules for notifications, conversations/messages, routes, and user preferences.
 
-Exemplos:
-- `docs/pt/arquitetura_geral.md` ↔ `docs/en/arquitetura_geral.md`
-- `docs/pt/api_endpoints.md` ↔ `docs/en/api_endpoints.md`
-- `docs/pt/governanca_ia.md` ↔ `docs/en/governanca_ia.md`
+## Technology Stack
 
-## Visão rápida do projeto / Quick project view
+- **Backend:** Django 4.2, Django REST Framework, django-allauth.
+- **Database:** PostgreSQL + PostGIS.
+- **GIS dependencies:** GDAL.
+- **Mobile:** Expo SDK 54 + React Native.
+- **Tests:** pytest + pytest-django.
 
-### Stack
-- Backend: Django + Django REST Framework + GeoDjango
-- Banco de dados / Database: PostgreSQL + PostGIS
-- Mobile: React Native (Expo)
-- Integrações / Integrations: PlantNet, Plant.id, Open-Meteo, INMET, MapBiomas
+## Quick Start
 
-### Funcionalidades centrais / Core capabilities
-- Cadastro georreferenciado de pontos PANC
-- Inferência de identificação por IA com revisão humana (human-in-the-loop)
-- APIs de notificações, comunicação, rotas e módulos ambientais
-- Fluxos mobile para mapa, cadastro, revisão e modo offline
-
-## Setup rápido / Quick setup
+### Backend
 
 ```bash
 python3 -m venv venv
@@ -44,7 +40,7 @@ python manage.py migrate
 python manage.py runserver 0.0.0.0:8000
 ```
 
-Mobile:
+### Mobile
 
 ```bash
 cd mobile
@@ -52,15 +48,16 @@ npm install
 npm start
 ```
 
-## Testes / Tests
+## Documentation
 
-```bash
-pytest
-```
+- **English documentation index:** [`docs/en/index.md`](./docs/en/index.md)
+- **Portuguese documentation index:** [`docs/pt-BR/index.md`](./docs/pt-BR/index.md)
+- **Docs hub:** [`docs/README.md`](./docs/README.md)
 
-## Arquivos institucionais / Project meta
-- [Contributing](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Security](SECURITY.md)
-- [Changelog](CHANGELOG.md)
-- [License](LICENSE)
+## Project Metadata
+
+- [Contributing Guidelines](./CONTRIBUTING.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Security Policy](./SECURITY.md)
+- [Changelog](./CHANGELOG.md)
+- [License](./LICENSE)
