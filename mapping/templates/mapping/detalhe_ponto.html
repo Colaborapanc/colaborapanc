@@ -1,0 +1,524 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+{% block title %}Detalhes do Ponto{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow border-0 mb-4">
+                <div class="card-header bg-success text-white d-flex align-items-center">
+                    <i class="bi bi-geo-alt-fill fs-3 me-3"></i>
+                    <h3 class="mb-0 fs-4 flex-grow-1">Detalhes do Ponto</h3>
+                    <a href="{% url 'mapa' %}" class="btn btn-light btn-sm ms-2">
+                        <i class="bi bi-arrow-left"></i> Voltar ao mapa
+                    </a>
+                </div>
+                <div class="card-body">
+                    <!-- STATUS -->
+                    <div class="mb-3">
+                        <span class="badge rounded-pill
+                            {% if ponto.status_validacao == 'aprovado' %} bg-success
+                            {% elif ponto.status_validacao == 'pendente' %} bg-warning text-dark
+                            {% elif ponto.status_validacao == 'reprovado' %} bg-danger
+                            {% else %} bg-info text-dark
+                            {% endif %}">
+                            {% if ponto.status_validacao == 'aprovado' %}<i class="bi bi-patch-check"></i> Aprovado
+                            {% elif ponto.status_validacao == 'pendente' %}<i class="bi bi-hourglass-split"></i> Em Validação
+                            {% elif ponto.status_validacao == 'reprovado' %}<i class="bi bi-x-octagon"></i> Reprovado
+                            {% else %}<i class="bi bi-info-circle"></i> Pendência{% endif %}
+                        </span>
+                    </div>
+
+                    <!-- PRINCIPAIS CAMPOS -->
+                    <dl class="row mb-2">
+                        <dt class="col-sm-4">Nome popular:</dt>
+                        <dd class="col-sm-8">
+                            {{ ponto.planta.nome_popular|default:ponto.nome_popular_sugerido|default:"Não informado" }}
+                        </dd>
+                        <dt class="col-sm-4">Nome científico:</dt>
+                        <dd class="col-sm-8">
+                            {{ ponto.planta.nome_cientifico|default:ponto.nome_cientifico_sugerido|default:"Não informado" }}
+                        </dd>
+                        <dt class="col-sm-4">Local:</dt>
+                        <dd class="col-sm-8">{% if ponto.tipo_local and ponto.tipo_local != 'outro' %}{{ ponto.get_tipo_local_display }}{% else %}Não especificado{% endif %}</dd>
+                        <dt class="col-sm-4">Endereço:</dt>
+                        <dd class="col-sm-8">
+                            {% if ponto.endereco or ponto.numero or ponto.bairro or ponto.cidade or ponto.estado %}
+                                {{ ponto.endereco|default_if_none:"" }}
+                                {% if ponto.numero %}, Nº {{ ponto.numero }}{% endif %}
+                                {% if ponto.bairro %}, Bairro {{ ponto.bairro }}{% endif %}
+                                {% if ponto.cidade %}, {{ ponto.cidade }}{% endif %}
+                                {% if ponto.estado %} - {{ ponto.estado }}{% endif %}
+                            {% else %}
+                                Não informado
+                            {% endif %}
+                        </dd>
+                        <dt class="col-sm-4">Colaborador:</dt>
+                        <dd class="col-sm-8">{{ ponto.colaborador|default:"Não informado" }}</dd>
+                        <dt class="col-sm-4">Relato/Observação:</dt>
+                        <dd class="col-sm-8">{{ ponto.relato|default:"Não informado" }}</dd>
+                        <dt class="col-sm-4">Data de cadastro:</dt>
+                        <dd class="col-sm-8">{{ ponto.criado_em|date:"d/m/Y H:i" }}</dd>
+                    </dl>
+                    
+                    <!-- FOTO -->
+                    {% if ponto.foto %}
+                        <div class="text-center my-3">
+                            <img src="{{ ponto.foto.url }}" class="img-fluid rounded shadow" alt="Foto do ponto" style="max-width:300px;">
+                        </div>
+                    {% endif %}
+                    
+                    <!-- MINI-MAPA -->
+                    {% if ponto.localizacao %}
+                        <div class="my-3" style="height:230px; border-radius:9px; overflow:hidden;">
+                            <div id="mini-mapa-detalhe" style="height:100%;"></div>
+                        </div>
+                        <div class="text-center">
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ ponto.localizacao.y }},{{ ponto.localizacao.x }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-geo-alt"></i> Ver no Google Maps
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <!-- ENRIQUECIMENTO TAXONÔMICO -->
+                    {% if enriquecimento %}
+                    <hr>
+                    <h5 class="mb-3">
+                        <i class="bi bi-search"></i> Enriquecimento Taxonômico
+                        {% if enriquecimento.status_enriquecimento == 'completo' and enriquecimento.grau_confianca >= 0.7 %}
+                            <span class="badge bg-success ms-2"><i class="bi bi-patch-check-fill"></i> Validado</span>
+                        {% elif enriquecimento.status_enriquecimento == 'parcial' or enriquecimento.grau_confianca >= 0.3 %}
+                            <span class="badge bg-warning text-dark ms-2"><i class="bi bi-exclamation-triangle"></i> Parcialmente Validado</span>
+                        {% else %}
+                            <span class="badge bg-secondary ms-2"><i class="bi bi-hourglass-split"></i> Pendente</span>
+                        {% endif %}
+                    </h5>
+
+                    <dl class="row mb-2">
+                        {% if enriquecimento.nome_cientifico_validado %}
+                        <dt class="col-sm-5">Nome validado:</dt>
+                        <dd class="col-sm-7"><em>{{ enriquecimento.nome_cientifico_validado }}</em></dd>
+                        {% endif %}
+                        {% if enriquecimento.nome_aceito %}
+                        <dt class="col-sm-5">Nome aceito:</dt>
+                        <dd class="col-sm-7"><strong><em>{{ enriquecimento.nome_aceito }}</em></strong></dd>
+                        {% endif %}
+                        {% if enriquecimento.autoria %}
+                        <dt class="col-sm-5">Autoria:</dt>
+                        <dd class="col-sm-7">{{ enriquecimento.autoria }}</dd>
+                        {% endif %}
+                        {% if enriquecimento.fonte_taxonomica_primaria %}
+                        <dt class="col-sm-5">Fonte primária:</dt>
+                        <dd class="col-sm-7">{{ enriquecimento.fonte_taxonomica_primaria }}</dd>
+                        {% endif %}
+                        {% if enriquecimento.fontes_secundarias %}
+                        <dt class="col-sm-5">Fontes secundárias:</dt>
+                        <dd class="col-sm-7">
+                            {% for f in enriquecimento.fontes_secundarias %}
+                                <span class="badge bg-light text-dark border me-1">{{ f }}</span>
+                            {% endfor %}
+                        </dd>
+                        {% endif %}
+                        {% if enriquecimento.grau_confianca is not None %}
+                        <dt class="col-sm-5">Grau de confiança:</dt>
+                        <dd class="col-sm-7">
+                            {% widthratio enriquecimento.grau_confianca 1 100 as pct %}
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar {% if enriquecimento.grau_confianca >= 0.7 %}bg-success{% elif enriquecimento.grau_confianca >= 0.4 %}bg-warning{% else %}bg-danger{% endif %}"
+                                     style="width: {{ pct }}%"
+                                     role="progressbar">
+                                    {{ pct }}%
+                                </div>
+                            </div>
+                        </dd>
+                        {% endif %}
+                    </dl>
+
+                    {% if enriquecimento.sinonimos %}
+                    <div class="mb-3">
+                        <strong>Sinônimos:</strong>
+                        <div class="mt-1">
+                            {% for s in enriquecimento.sinonimos %}
+                                <span class="badge bg-light text-dark border me-1 mb-1"><em>{{ s }}</em></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if enriquecimento.distribuicao_resumida %}
+                    <div class="mb-3">
+                        <strong>Distribuição:</strong>
+                        <p class="text-muted mb-0">{{ enriquecimento.distribuicao_resumida }}</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="row mb-3">
+                        {% if enriquecimento.ocorrencias_gbif is not None %}
+                        <div class="col-6">
+                            <div class="card text-center border-success">
+                                <div class="card-body py-2">
+                                    <div class="fw-bold text-success fs-5">{{ enriquecimento.ocorrencias_gbif|default:"0" }}</div>
+                                    <small class="text-muted">Ocorrências GBIF</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if enriquecimento.ocorrencias_inaturalist is not None %}
+                        <div class="col-6">
+                            <div class="card text-center border-info">
+                                <div class="card-body py-2">
+                                    <div class="fw-bold text-info fs-5">{{ enriquecimento.ocorrencias_inaturalist|default:"0" }}</div>
+                                    <small class="text-muted">Ocorrências iNaturalist</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if enriquecimento.fenologia_observada.meses %}
+                    <div class="mb-3">
+                        <strong>Fenologia observada (iNaturalist):</strong>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            {% for mes, qtd in enriquecimento.fenologia_observada.meses.items %}
+                                <span class="badge bg-success bg-opacity-75">{{ mes }}: {{ qtd }}</span>
+                            {% endfor %}
+                        </div>
+                        {% if enriquecimento.fenologia_observada.estacao_pico %}
+                        <small class="text-muted mt-1 d-block">Pico: {{ enriquecimento.fenologia_observada.estacao_pico }}</small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if enriquecimento.imagem_url %}
+                    <div class="mb-3">
+                        <strong>Imagem de referência:</strong>
+                        <div class="text-center mt-2">
+                            <img src="{{ enriquecimento.imagem_url }}" class="img-fluid rounded shadow" alt="Imagem de referência" style="max-width:280px;">
+                            {% if enriquecimento.imagem_fonte %}
+                            <div class="small text-muted mt-1">Fonte: {{ enriquecimento.imagem_fonte }}</div>
+                            {% endif %}
+                            {% if enriquecimento.licenca_imagem %}
+                            <div class="small text-muted">Licença: {{ enriquecimento.licenca_imagem }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if enriquecimento.ultima_validacao_em %}
+                    <div class="small text-muted mb-2">
+                        <i class="bi bi-clock"></i> Última validação: {{ enriquecimento.ultima_validacao_em|date:"d/m/Y H:i" }}
+                    </div>
+                    {% endif %}
+
+                    {% if historico_enriquecimento %}
+                    <details class="mb-3">
+                        <summary class="text-muted" style="cursor:pointer;">
+                            <small><i class="bi bi-clock-history"></i> Histórico de validação ({{ historico_enriquecimento|length }})</small>
+                        </summary>
+                        <div class="list-group mt-2">
+                            {% for h in historico_enriquecimento %}
+                            <div class="list-group-item list-group-item-action py-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="badge {% if h.status == 'completo' %}bg-success{% elif h.status == 'parcial' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                        {{ h.status }}
+                                    </span>
+                                    <small class="text-muted">{{ h.data|date:"d/m/Y H:i" }}</small>
+                                </div>
+                                <small class="text-muted">Fontes: {{ h.fontes_consultadas|join:", " }}</small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </details>
+                    {% endif %}
+
+                    {% endif %}
+                    {# fim enriquecimento #}
+
+                    {% if ponto.status_enriquecimento and ponto.status_enriquecimento != 'pendente' %}
+                    <hr>
+                    <h5 class="mb-3"><i class="bi bi-patch-check"></i> Dados científicos</h5>
+                    <div class="mb-3 d-flex flex-wrap gap-2">
+                        {% if ponto.status_enriquecimento == 'completo' %}
+                            <span class="badge bg-success">Validado</span>
+                        {% elif ponto.status_enriquecimento == 'parcial' %}
+                            <span class="badge bg-warning text-dark">Parcialmente validado</span>
+                        {% elif ponto.status_enriquecimento == 'falho' %}
+                            <span class="badge bg-danger">Falha temporária</span>
+                        {% endif %}
+                    </div>
+
+                    {# --- Taxonomia: só mostra campos que possuem valor real --- #}
+                    {% if ponto.nome_cientifico_validado or ponto.nome_aceito or ponto.autoria or ponto.sinonimos %}
+                    <div class="card border-0 bg-light mb-3">
+                        <div class="card-body py-3">
+                            <h6 class="text-success mb-2">Taxonomia</h6>
+                            <dl class="row mb-0">
+                                {% if ponto.nome_cientifico_validado %}
+                                <dt class="col-sm-4">Nome validado:</dt><dd class="col-sm-8"><em>{{ ponto.nome_cientifico_validado }}</em></dd>
+                                {% endif %}
+                                {% if ponto.nome_aceito %}
+                                <dt class="col-sm-4">Nome aceito:</dt><dd class="col-sm-8"><strong><em>{{ ponto.nome_aceito }}</em></strong></dd>
+                                {% endif %}
+                                {% if ponto.autoria %}
+                                <dt class="col-sm-4">Autoria:</dt><dd class="col-sm-8">{{ ponto.autoria }}</dd>
+                                {% endif %}
+                                {% if ponto.sinonimos %}
+                                <dt class="col-sm-4">Sinônimos:</dt><dd class="col-sm-8">{{ ponto.sinonimos|join:", " }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {# --- Uso alimentar: só mostra se houver dados confirmados --- #}
+                    {% if ponto.comestibilidade_confirmada or ponto.parte_comestivel_confirmada %}
+                    <div class="card border-0 bg-light mb-3">
+                        <div class="card-body py-3">
+                            <h6 class="text-success mb-2">Uso alimentar</h6>
+                            <dl class="row mb-0">
+                                {% if ponto.comestibilidade_confirmada %}
+                                    <dt class="col-sm-4">Comestível:</dt>
+                                    <dd class="col-sm-8">
+                                        {% if ponto.comestibilidade_status == 'sim' %}<span class="badge bg-success">Sim</span>
+                                        {% elif ponto.comestibilidade_status == 'nao' %}<span class="badge bg-danger">Não</span>
+                                        {% else %}<span class="badge bg-secondary">Indeterminado</span>{% endif %}
+                                        {% if ponto.fontes_campos_enriquecimento.comestibilidade_status and ponto.fontes_campos_enriquecimento.comestibilidade_status != 'nenhuma_fonte_confirmou' %}
+                                        <small class="text-muted d-block">Fonte: {{ ponto.fontes_campos_enriquecimento.comestibilidade_status }}</small>
+                                        {% endif %}
+                                    </dd>
+                                {% endif %}
+                                {% if ponto.parte_comestivel_confirmada and ponto.parte_comestivel_lista %}
+                                    <dt class="col-sm-4">Parte comestível:</dt>
+                                    <dd class="col-sm-8">
+                                        {{ ponto.parte_comestivel_lista|join:", " }}
+                                        {% if ponto.fontes_campos_enriquecimento.parte_comestivel and ponto.fontes_campos_enriquecimento.parte_comestivel != 'nenhuma_fonte_confirmou' %}
+                                        <small class="text-muted d-block">Fonte: {{ ponto.fontes_campos_enriquecimento.parte_comestivel }}</small>
+                                        {% endif %}
+                                    </dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {# --- Sazonalidade: frutificação + colheita agrupados, só se houver dados --- #}
+                    {% if ponto.frutificacao_confirmada or ponto.colheita_confirmada %}
+                    <div class="card border-0 bg-light mb-3">
+                        <div class="card-body py-3">
+                            <h6 class="text-success mb-2">Sazonalidade</h6>
+                            <dl class="row mb-0">
+                                {% if ponto.frutificacao_confirmada and ponto.frutificacao_meses %}
+                                    <dt class="col-sm-4">Frutificação:</dt>
+                                    <dd class="col-sm-8">
+                                        {{ ponto.frutificacao_meses|join:", " }}
+                                        {% if ponto.fontes_campos_enriquecimento.frutificacao_meses and ponto.fontes_campos_enriquecimento.frutificacao_meses != 'nenhuma_fonte_confirmou' %}
+                                        <small class="text-muted d-block">Fonte: {{ ponto.fontes_campos_enriquecimento.frutificacao_meses }}</small>
+                                        {% endif %}
+                                    </dd>
+                                {% endif %}
+                                {% if ponto.colheita_confirmada and ponto.colheita_periodo %}
+                                    <dt class="col-sm-4">Colheita:</dt>
+                                    <dd class="col-sm-8">
+                                        {% if ponto.colheita_periodo.0 %}{{ ponto.colheita_periodo|join:", " }}{% else %}{{ ponto.colheita_periodo }}{% endif %}
+                                        {% if ponto.fontes_campos_enriquecimento.colheita_periodo and ponto.fontes_campos_enriquecimento.colheita_periodo != 'nenhuma_fonte_confirmou' %}
+                                        <small class="text-muted d-block">Fonte: {{ ponto.fontes_campos_enriquecimento.colheita_periodo }}</small>
+                                        {% endif %}
+                                    </dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {# --- Evidência e distribuição: só mostra campos com valor --- #}
+                    {% if ponto.distribuicao_resumida or ponto.ocorrencias_gbif or ponto.ocorrencias_inaturalist %}
+                    <div class="card border-0 bg-light mb-3">
+                        <div class="card-body py-3">
+                            <h6 class="text-success mb-2">Evidência e distribuição</h6>
+                            <dl class="row mb-0">
+                                {% if ponto.grau_confianca_taxonomica %}
+                                <dt class="col-sm-4">Confiança taxonômica:</dt>
+                                <dd class="col-sm-8">
+                                    {% widthratio ponto.grau_confianca_taxonomica 1 100 as pct_tax %}
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar {% if ponto.grau_confianca_taxonomica >= 0.7 %}bg-success{% elif ponto.grau_confianca_taxonomica >= 0.4 %}bg-warning{% else %}bg-danger{% endif %}"
+                                             style="width: {{ pct_tax }}%"
+                                             role="progressbar">{{ pct_tax }}%</div>
+                                    </div>
+                                </dd>
+                                {% endif %}
+                                {% if ponto.distribuicao_resumida %}
+                                <dt class="col-sm-4">Distribuição:</dt><dd class="col-sm-8">{{ ponto.distribuicao_resumida }}</dd>
+                                {% endif %}
+                                {% if ponto.ocorrencias_gbif %}
+                                <dt class="col-sm-4">Ocorrências GBIF:</dt><dd class="col-sm-8">{{ ponto.ocorrencias_gbif }}</dd>
+                                {% endif %}
+                                {% if ponto.ocorrencias_inaturalist %}
+                                <dt class="col-sm-4">Ocorrências iNaturalist:</dt><dd class="col-sm-8">{{ ponto.ocorrencias_inaturalist }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {# --- Fontes: só mostra se houver informação real --- #}
+                    {% if ponto.fonte_taxonomica_primaria or ponto.fontes_taxonomicas_secundarias or ponto.ultima_validacao_em %}
+                    <div class="card border-0 bg-light mb-3">
+                        <div class="card-body py-3">
+                            <h6 class="text-success mb-2">Fontes</h6>
+                            <dl class="row mb-0">
+                                {% if ponto.fonte_taxonomica_primaria %}
+                                <dt class="col-sm-4">Fonte primária:</dt><dd class="col-sm-8">{{ ponto.fonte_taxonomica_primaria }}</dd>
+                                {% endif %}
+                                {% if ponto.fontes_taxonomicas_secundarias %}
+                                <dt class="col-sm-4">Fontes secundárias:</dt>
+                                <dd class="col-sm-8">
+                                    {% for f in ponto.fontes_taxonomicas_secundarias %}
+                                        <span class="badge bg-light text-dark border me-1">{{ f }}</span>
+                                    {% endfor %}
+                                </dd>
+                                {% endif %}
+                                {% if ponto.ultima_validacao_em %}
+                                <dt class="col-sm-4">Última validação:</dt><dd class="col-sm-8">{{ ponto.ultima_validacao_em|date:"d/m/Y H:i" }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if user.is_superuser %}
+                    <div class="card border-0 bg-warning-subtle mb-3">
+                        <div class="card-body py-3">
+                            <h6 class="text-dark mb-2">Detalhe técnico/admin</h6>
+                            <ul class="mb-2 small">
+                                <li>Status: {{ ponto.status_enriquecimento|default:'pendente' }}</li>
+                                <li>Comestível: {% if ponto.comestibilidade_confirmada %}{{ ponto.comestibilidade_status }}{% else %}sem evidência{% endif %} · fonte: {{ ponto.fontes_campos_enriquecimento.comestibilidade_status|default:'nenhuma' }}</li>
+                                <li>Parte comestível: {% if ponto.parte_comestivel_confirmada %}{{ ponto.parte_comestivel_lista|join:", " }}{% else %}sem evidência{% endif %} · fonte: {{ ponto.fontes_campos_enriquecimento.parte_comestivel|default:'nenhuma' }}</li>
+                                <li>Frutificação: {% if ponto.frutificacao_confirmada %}{{ ponto.frutificacao_meses|join:", " }}{% else %}sem evidência{% endif %} · fonte: {{ ponto.fontes_campos_enriquecimento.frutificacao_meses|default:'nenhuma' }}</li>
+                                <li>Colheita: {% if ponto.colheita_confirmada %}{{ ponto.colheita_periodo }}{% else %}sem evidência{% endif %} · fonte: {{ ponto.fontes_campos_enriquecimento.colheita_periodo|default:'nenhuma' }}</li>
+                            </ul>
+                            <div class="small">Integrações OK: {{ ponto.integracoes_utilizadas|join:', '|default:'-' }}</div>
+                            <div class="small">Integrações falha: {{ ponto.integracoes_com_falha|join:', '|default:'-' }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endif %}{# fim status_enriquecimento != pendente #}
+
+                    {% if ponto.imagem_url %}
+                        <div class="mb-3 text-center">
+                            <img src="{{ ponto.imagem_url }}" alt="Imagem de referência" class="img-fluid rounded" style="max-height: 220px;">
+                            <div class="small text-muted mt-1">Fonte: {{ ponto.imagem_fonte|default:"Não informado" }}{% if ponto.licenca_imagem %} • Licença: {{ ponto.licenca_imagem }}{% endif %}</div>
+                        </div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-outline-success btn-sm" id="btn-revalidar-detalhe" data-ponto-id="{{ ponto.id }}">
+                            <i class="bi bi-arrow-clockwise"></i> Revalidar dados
+                        </button>
+                        <small class="text-muted d-block mt-1">Revalidação executada no backend.</small>
+                        <div id="revalidacao-feedback" class="mt-2"></div>
+                    </div>
+                    <h5 class="mb-3"><i class="bi bi-broadcast-pin"></i> Histórico ambiental recente</h5>
+                    {% if eventos_ambientais %}
+                        <div class="list-group">
+                            {% for evento in eventos_ambientais %}
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <strong>{{ evento.get_tipo_evento_display }}</strong>
+                                            <span class="badge bg-secondary ms-1">{{ evento.fonte }}</span>
+                                            {% if evento.severidade %}<span class="badge bg-warning text-dark ms-1">{{ evento.severidade }}</span>{% endif %}
+                                        </div>
+                                        <small class="text-muted">{{ evento.ocorrido_em|date:"d/m/Y H:i" }}</small>
+                                    </div>
+                                    <div class="small text-muted mt-1">
+                                        {% if evento.distancia_metros %}Distância: {{ evento.distancia_metros|floatformat:0 }} m • {% endif %}
+                                        {% if evento.confianca %}Confiança: {{ evento.confianca }} • {% endif %}
+                                        {% if evento.frp %}FRP: {{ evento.frp }}{% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted mb-0">Nenhum evento ambiental monitorado para este ponto.</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-end">
+                    {% if can_edit_ponto %}
+                        <a href="{% url 'editar_ponto' ponto.id %}" class="btn btn-outline-success btn-sm">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <a href="{% url 'remover_ponto' ponto.id %}" class="btn btn-outline-danger btn-sm ms-2">
+                            <i class="bi bi-trash"></i> Remover
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{% if ponto.localizacao %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function(){
+        let lat = {{ ponto.localizacao.y }};
+        let lng = {{ ponto.localizacao.x }};
+        let mapDiv = document.getElementById('mini-mapa-detalhe');
+        if(mapDiv) {
+            let map = L.map(mapDiv, {zoomControl:false, attributionControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, boxZoom:false, keyboard:false});
+            map.setView([lat, lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18}).addTo(map);
+            L.marker([lat, lng]).addTo(map);
+        }
+    });
+    </script>
+{% endif %}
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const btn = document.getElementById("btn-revalidar-detalhe");
+        const feedback = document.getElementById("revalidacao-feedback");
+        if (!btn) return;
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return '';
+        }
+        btn.addEventListener("click", async function () {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Revalidando...';
+            if (feedback) {
+                feedback.innerHTML = '<div class="alert alert-info py-2 mb-0">Revalidação em andamento...</div>';
+            }
+            try {
+                const response = await fetch(`/api/pontos/${btn.dataset.pontoId}/revalidar/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: '{}',
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data?.erro || "Falha de revalidação");
+                if (feedback) {
+                    feedback.innerHTML = '<div class="alert alert-success py-2 mb-0">Revalidação concluída. Atualizando a página...</div>';
+                }
+                setTimeout(() => window.location.reload(), 900);
+            } catch (err) {
+                if (feedback) {
+                    feedback.innerHTML = '<div class="alert alert-danger py-2 mb-0">Não foi possível revalidar agora. Tente novamente em instantes.</div>';
+                }
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Revalidar dados enriquecidos';
+            }
+        });
+    });
+    </script>
+{% endblock %}

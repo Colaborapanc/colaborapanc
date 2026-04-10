@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" style="max-width: 700px; margin: 2rem auto; background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 16px #0002;">
+
+    <h2>Confirmação do Cadastro</h2>
+
+    {% if resultado.nome_cientifico %}
+        <div style="background:#f5fff5; padding:1rem; border-radius:8px; margin-bottom: 1rem;">
+            <b>Espécie sugerida:</b><br>
+            <span style="font-size:1.1em; color:#245928">{{ resultado.nome_cientifico }}</span>
+            {% if resultado.nomes_populares %}
+                <br><b>Nomes populares:</b> {{ resultado.nomes_populares|join:", " }}
+            {% endif %}
+            <br><small>Identificação feita via <b>{{ resultado.api_usada }}</b>.</small>
+        </div>
+    {% elif resultado.mensagem %}
+        <div style="background:#fff8e1; padding:1rem; border-radius:8px; margin-bottom: 1rem;">
+            <b>{{ resultado.mensagem }}</b>
+        </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <p>
+            <label for="id_nome_popular">Nome popular</label>
+            <input type="text" id="id_nome_popular" name="nome_popular" 
+                   value="{{ resultado.nomes_populares.0|default_if_none:'' }}">
+        </p>
+        <p>
+            <label for="id_nome_cientifico">Nome científico</label>
+            <input type="text" id="id_nome_cientifico" name="nome_cientifico"
+                   value="{{ resultado.nome_cientifico|default_if_none:'' }}">
+        </p>
+        <p>
+            <label for="id_relato">Relato ou observação</label>
+            <textarea id="id_relato" name="relato" rows="2">{{ ponto.relato }}</textarea>
+        </p>
+        <p>
+            <label for="id_colaborador">Seu nome/apelido (opcional)</label>
+            <input type="text" id="id_colaborador" name="colaborador" value="{{ ponto.colaborador }}">
+        </p>
+        <input type="hidden" name="ponto_id" value="{{ ponto.id }}">
+        
+        <div style="margin:1rem 0;">
+            <b>Foto enviada:</b><br>
+            {% if ponto.foto_identificacao %}
+                <img src="{{ ponto.foto_identificacao.url }}" width="220" style="border-radius:8px;">
+            {% endif %}
+        </div>
+
+        <

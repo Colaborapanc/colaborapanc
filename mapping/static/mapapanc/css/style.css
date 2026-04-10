@@ -1,0 +1,133 @@
+/* Base styling */
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background-color: #edf1f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* Container */
+.container {
+    max-width: 960px;
+    margin: 3rem auto;
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+    transition: box-shadow 0.3s ease;
+}
+
+.container:hover {
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2 {
+    color: #2c7a4b;
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Forms and filters */
+form p, .filtros {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+/* Inputs and Textareas */
+input, select, textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-top: 0.3rem;
+    background-color: #fdfdfd;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #2e7d32;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+/* Readonly input style */
+input[readonly] {
+    background-color: #f1f1f1;
+    color: #666;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+    width: auto;
+}
+
+/* Map section */
+#map {
+    height: 400px;
+    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Buttons */
+button, .btn-adicionar {
+    background-color: #2e7d32;
+    color: #fff;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+    display: inline-block;
+}
+
+button:hover, .btn-adicionar:hover {
+    background-color: #256429;
+    transform: translateY(-1px);
+}
+
+/* Links */
+a {
+    color: #2e7d32;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #1b5e20;
+    text-decoration: underline;
+}
+
+/* Alerts */
+.alert {
+    color: #d32f2f;
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .container {
+        padding: 1.2rem;
+    }
+
+    #map {
+        height: 260px;
+    }
+
+    form, .filtros {
+        font-size: 0.96rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+

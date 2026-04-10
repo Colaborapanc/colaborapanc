@@ -1,0 +1,84 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ColaboraPANC",
+  "description": "Open-source collaborative platform for AI-assisted geo-referenced mapping, human-in-the-loop expert validation, and territorial prioritisation of Non-Conventional Food Plants (PANCs) in Brazil.",
+  "version": "1.0.0",
+  "dateCreated": "2024-01-01",
+  "datePublished": "2026-01-22",
+  "dateModified": "2026-01-22",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "url": "https://github.com/warleynutricionista-jpg/colaborapanc",
+  "codeRepository": "https://github.com/warleynutricionista-jpg/colaborapanc",
+  "issueTracker": "https://github.com/warleynutricionista-jpg/colaborapanc/issues",
+  "programmingLanguage": [
+    {
+      "@type": "ComputerLanguage",
+      "name": "Python",
+      "version": "3.11"
+    },
+    {
+      "@type": "ComputerLanguage",
+      "name": "JavaScript"
+    }
+  ],
+  "runtimePlatform": [
+    "Django 4.2",
+    "PostgreSQL with PostGIS",
+    "React Native / Expo",
+    "Node.js 18+"
+  ],
+  "operatingSystem": [
+    "Linux",
+    "macOS",
+    "Windows (via Docker)"
+  ],
+  "softwareRequirements": [
+    "Python >= 3.11",
+    "PostgreSQL >= 12 with PostGIS extension",
+    "GDAL >= 3.0",
+    "Node.js >= 18"
+  ],
+  "keywords": [
+    "PANC",
+    "non-conventional food plants",
+    "citizen science",
+    "biodiversity",
+    "geospatial",
+    "AI-assisted identification",
+    "human-in-the-loop",
+    "food security",
+    "Brazil",
+    "Django",
+    "PostGIS",
+    "React Native"
+  ],
+  "applicationCategory": "Scientific",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Researchers, nutritionists, ecologists, food security scientists, environmental managers"
+  },
+  "author": [
+    {
+      "@type": "Organization",
+      "name": "ColaboraPANC Contributors"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Organization",
+      "name": "ColaboraPANC Maintainers"
+    }
+  ],
+  "referencePublication": {
+    "@type": "ScholarlyArticle",
+    "name": "ColaboraPANC: AI-Assisted Geo-Referenced Mapping and Human-in-the-Loop Validation of Non-Conventional Food Plants",
+    "description": "Manuscript submitted / in preparation"
+  },
+  "funding": [],
+  "relatedLink": [
+    "https://github.com/warleynutricionista-jpg/colaborapanc/blob/main/docs/arquitetura_geral.md",
+    "https://github.com/warleynutricionista-jpg/colaborapanc/blob/main/docs/fluxo_cientifico_do_sistema.md",
+    "https://github.com/warleynutricionista-jpg/colaborapanc/blob/main/docs/api_endpoints.md"
+  ]
+}

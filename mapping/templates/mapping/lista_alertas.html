@@ -1,0 +1,83 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="card shadow rounded-3">
+    <div class="card-body">
+      <h2 class="text-center text-success mb-4">
+        <i class="bi bi-list-check"></i> Lista de Alertas Climáticos
+      </h2>
+
+      <form method="get" class="row g-3 mb-4">
+        <div class="col-md-4">
+          <label for="estado" class="form-label">Estado</label>
+          <input type="text" name="estado" id="estado" class="form-control" placeholder="Ex: MG, SP..." value="{{ estado }}">
+        </div>
+        <div class="col-md-4">
+          <label for="ponto" class="form-label">Nome do Ponto</label>
+          <input type="text" name="ponto" id="ponto" class="form-control" placeholder="Ex: Araruta, Ora-pro-nóbis..." value="{{ ponto }}">
+        </div>
+        <div class="col-md-4">
+          <label for="tipo" class="form-label">Tipo de Alerta</label>
+          <input type="text" name="tipo" id="tipo" class="form-control" placeholder="Ex: Queimada, Enchente..." value="{{ tipo }}">
+        </div>
+        <div class="col-12 text-end">
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-funnel-fill"></i> Filtrar
+          </button>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+          <thead class="table-success text-center">
+            <tr>
+              <th><i class="bi bi-tree-fill"></i> Ponto</th>
+              <th><i class="bi bi-geo-alt-fill"></i> Local</th>
+              <th><i class="bi bi-exclamation-circle-fill"></i> Tipo</th>
+              <th><i class="bi bi-calendar-event-fill"></i> Início</th>
+              <th><i class="bi bi-calendar2-check-fill"></i> Fim</th>
+              <th><i class="bi bi-globe2"></i> Fonte</th>
+              <th colspan="2">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for alerta in alertas %}
+              <tr>
+                <td><strong>{{ alerta.ponto.nome_popular }}</strong></td>
+                <td>{{ alerta.ponto.cidade }} / {{ alerta.ponto.estado }}</td>
+                <td>{{ alerta.tipo }}</td>
+                <td>{{ alerta.inicio|date:"d/m/Y H:i" }}</td>
+                <td>{{ alerta.fim|date:"d/m/Y H:i" }}</td>
+                <td>{{ alerta.fonte }}</td>
+                <td class="text-center">
+                  {% if alerta.ponto.latitude and alerta.ponto.longitude %}
+                    <a href="https://www.google.com/maps?q={{ alerta.ponto.latitude }},{{ alerta.ponto.longitude }}"
+                       class="btn btn-sm btn-outline-success" target="_blank" rel="noopener noreferrer">
+                      <i class="bi bi-geo-alt"></i> Google Maps
+                    </a>
+                  {% else %}
+                    <span class="text-muted">-</span>
+                  {% endif %}
+                </td>
+                <td class="text-center">
+                  <a href="{% url 'mapa' %}?ponto_id={{ alerta.ponto.id }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-map-fill"></i> Ver no Mapa
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="8" class="text-center text-muted">
+                  Nenhum alerta encontrado com os filtros aplicados.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Missões & Desafios PANC{% endblock %}
+
+{% block content %}
+<div class="container painel-gamificacao py-4">
+
+    <div class="d-flex align-items-center mb-4">
+        <span class="bi bi-lightning-charge-fill fs-2 text-warning me-2"></span>
+        <h2 class="mb-0">Missões & Desafios</h2>
+    </div>
+
+    <div class="alert alert-success fs-6 mb-3 border-0 shadow-sm">
+        <span class="bi bi-megaphone"></span>
+        <b>Participe dos desafios, some pontos e desbloqueie conquistas automáticas!</b> <br>
+        <small class="text-muted">Missões atualizadas semanalmente. Conquiste medalhas e badges por cadastro, feedback, revisões e indicações de novos usuários!</small>
+    </div>
+
+    <div class="row g-4">
+        <!-- Missões Diárias -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-success mb-3"><span class="bi bi-calendar-day me-1"></span> Missões Diárias</h5>
+                    <ul class="list-unstyled">
+                        {% for m in missoes_diarias %}
+                            <li class="mb-3">
+                                <div class="fw-semibold">
+                                    <span class="bi {% if m.completa %}bi-check-circle-fill text-success{% else %}bi-circle{% endif %}"></span>
+                                    {{ m.titulo }}
+                                </div>
+                                <div class="small text-muted">{{ m.descricao }}</div>
+                                <div>
+                                    <span class="badge bg-success mt-1">+{{ m.pontos }} pts</span>
+                                    {% if m.progresso %}
+                                        <div class="progress mt-1" style="height: 7px;">
+                                            <div class="progress-bar bg-success" role="progressbar"
+                                                style="width:{{ m.progresso_percent }}%"
+                                                aria-valuenow="{{ m.progresso }}" aria-valuemin="0" aria-valuemax="{{ m.meta }}"></div>
+                                        </div>
+                                        <small class="text-muted">{{ m.progresso }}/{{ m.meta }} concluídos</small>
+                                    {% endif %}
+                                    {% if m.completa %}
+                                        <span class="badge bg-light text-success border ms-1">Concluída!</span>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">Sem missões hoje. Aproveite para explorar o mapa!</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Missões Semanais -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-warning mb-3"><span class="bi bi-calendar-week me-1"></span> Missões Semanais</h5>
+                    <ul class="list-unstyled">
+                        {% for m in missoes_semanais %}
+                            <li class="mb-3">
+                                <div class="fw-semibold">
+                                    <span class="bi {% if m.completa %}bi-check-circle-fill text-success{% else %}bi-circle{% endif %}"></span>
+                                    {{ m.titulo }}
+                                    {% if m.tipo == "cadastros" %}
+                                        <span class="badge bg-primary ms-1">Meta</span>
+                                    {% endif %}
+                                </div>
+                                <div class="small text-muted">{{ m.descricao }}</div>
+                                <div>
+                                    <span class="badge bg-warning text-dark mt-1">+{{ m.pontos }} pts</span>
+                                    {% if m.meta %}
+                                        <div class="progress mt-1" style="height: 7px;">
+                                            <div class="progress-bar bg-warning" role="progressbar"
+                                                style="width:{{ m.progresso_percent }}%"
+                                                aria-valuenow="{{ m.progresso }}" aria-valuemin="0" aria-valuemax="{{ m.meta }}"></div>
+                                        </div>
+                                        <small class="text-muted">{{ m.progresso }}/{{ m.meta }} cadastros</small>
+                                    {% endif %}
+                                    {% if m.completa %}
+                                        <span class="badge bg-light text-success border ms-1">Concluída!</span>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">Nenhuma missão semanal ativa no momento.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Missões Especiais & Sazonais -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary mb-3"><span class="bi bi-stars me-1"></span> Missões Especiais</h5>
+                    <ul class="list-unstyled">
+                        {% for m in missoes_especiais %}
+                            <li class="mb-3">
+                                <div class="fw-semibold">
+                                    <span class="bi {% if m.completa %}bi-check-circle-fill text-success{% else %}bi-circle{% endif %}"></span>
+                                    {{ m.titulo }}
+                                    {% if m.secreta %}<span class="badge bg-dark text-light ms-1">Secreta</span>{% endif %}
+                                    {% if m.tipo == "evento" %}
+                                        <span class="badge bg-info ms-1">Evento</span>
+                                    {% endif %}
+                                </div>
+                                <div class="small text-muted">{{ m.descricao }}</div>
+                                <span class="badge bg-primary mt-1">+{{ m.pontos }} pts</span>
+                                {% if m.completa %}
+                                    <span class="badge bg-light text-success border ms-1">Concluída!</span>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">Fique ligado(a) para novos desafios!</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5">
+
+    <!-- Missões Engraçadas e Temáticas -->
+    <h4 class="text-center text-secondary mb-4">
+        <span class="bi bi-emoji-sunglasses me-1"></span>
+        Missões Inusitadas & Ecológicas
+    </h4>
+    <div class="row g-3 justify-content-center">
+        <div class="col-md-3">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <div class="fs-3 mb-2"><span class="bi bi-flower1"></span></div>
+                    <div class="fw-semibold mb-2">Planta Selfie</div>
+                    <div class="small text-muted mb-2">Cadastre uma PANC tirando uma selfie ao lado da planta.</div>
+                    <span class="badge bg-info">+40 pts</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <div class="fs-3 mb-2"><span class="bi bi-people-fill"></span></div>
+                    <div class="fw-semibold mb-2">Arraste um Amigo</div>
+                    <div class="small text-muted mb-2">Traga um(a) amigo(a) para cadastrar uma PANC. PANC é mais divertida em grupo!</div>
+                    <span class="badge bg-success">+50 pts</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <div class="fs-3 mb-2"><span class="bi bi-camera-reels"></span></div>
+                    <div class="fw-semibold mb-2">Vídeo do Sabor</div>
+                    <div class="small text-muted mb-2">Grave um vídeo experimentando uma PANC e contando o gosto.</div>
+                    <span class="badge bg-warning text-dark">+70 pts</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <div class="fs-3 mb-2"><span class="bi bi-tree"></span></div>
+                    <div class="fw-semibold mb-2">Salvando o Cerrado</div>
+                    <div class="small text-muted mb-2">Cadastre pelo menos 3 PANCs de regiões ameaçadas.</div>
+                    <span class="badge bg-success">+60 pts</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 text-muted small">
+        <b>Ranking, medalhas e badges são atualizados automaticamente conforme suas metas!</b> <br>
+        Mais missões? <b>Sugira pelo feedback!</b> Participe de eventos e concorra a surpresas!
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<style>
+.painel-gamificacao h2, .painel-gamificacao h4 { font-family: 'Inter', sans-serif; }
+.card { border-radius: 16px; }
+.badge { font-size: 0.95rem; }
+.progress { background-color: #eee; }
+.progress-bar { transition: width 0.7s cubic-bezier(.3,1.3,.5,1) }
+</style>
+{% endblock %}

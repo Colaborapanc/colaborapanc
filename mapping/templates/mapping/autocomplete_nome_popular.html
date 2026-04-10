@@ -1,0 +1,56 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Buscar Nome Popular{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-3">
+        <div class="col">
+            <h2 class="fw-bold text-success">
+                <i class="bi bi-search"></i> Autocomplete de Nomes Populares
+            </h2>
+            <form class="my-3" id="form-autocomplete">
+                <div class="input-group">
+                    <input type="text" id="input-nome" class="form-control" placeholder="Digite pelo menos 2 letras...">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="resultados"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('form-autocomplete').addEventListener('submit', function(e){
+    e.preventDefault();
+    const val = document.getElementById('input-nome').value.trim();
+    if(val.length < 2){
+        document.getElementById('resultados').innerHTML = '<div class="alert alert-warning mt-3">Digite pelo menos 2 letras para buscar.</div>';
+        return;
+    }
+    document.getElementById('resultados').innerHTML = '<div class="text-center mt-4"><div class="spinner-border text-success"></div></div>';
+    fetch(`/api/autocomplete-nome/?term=${encodeURIComponent(val)}`)
+        .then(resp => resp.json())
+        .then(data => {
+            if(Array.isArray(data) && data.length){
+                let html = '<ul class="list-group mt-3">';
+                data.forEach(item => {
+                    html += `<li class="list-group-item">${item}</li>`;
+                });
+                html += '</ul>';
+                document.getElementById('resultados').innerHTML = html;
+            } else {
+                document.getElementById('resultados').innerHTML = '<div class="alert alert-info mt-3">Nenhum nome encontrado.</div>';
+            }
+        })
+        .catch(() => {
+            document.getElementById('resultados').innerHTML = '<div class="alert alert-danger mt-3">Erro ao buscar nomes.</div>';
+        });
+});
+</script>
+{% endblock %}

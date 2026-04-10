@@ -1,0 +1,338 @@
+{% load socialaccount %}
+{% load socialaccount_extras %}
+{% load static %}
+{% load branding_extras %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar na Plataforma PANCs</title>
+    <style>
+      :root {
+        --primary: #256d1f;
+        --primary-soft: #ebf8e8;
+        --text-main: #1f2937;
+        --text-soft: #6b7280;
+        --border: #dbe5df;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        font-family: "Inter", "Segoe UI", sans-serif;
+        color: var(--text-main);
+        background:
+          radial-gradient(circle at 10% 10%, #f6fff2 0%, #edf6f9 35%, #e9eef5 100%);
+      }
+
+      .login-wrapper {
+        width: min(960px, 100%);
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 28px 65px rgba(15, 23, 42, 0.18);
+      }
+
+      .login-cover {
+        padding: 48px 40px;
+        background:
+          linear-gradient(165deg, rgba(37, 109, 31, 0.95), rgba(56, 161, 105, 0.88));
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .brand-tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+        font-size: 0.82rem;
+        letter-spacing: 0.02em;
+      }
+
+      .login-cover h1 {
+        margin: 24px 0 10px;
+        font-size: clamp(1.7rem, 2.8vw, 2.4rem);
+        line-height: 1.2;
+      }
+
+      .login-cover p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.55;
+      }
+
+      .login-card {
+        padding: 40px 34px;
+      }
+
+
+
+      .login-brand {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+
+      .login-logo {
+        width: min(100%, 220px);
+        max-width: 220px;
+        height: auto;
+        display: block;
+      }
+
+      .login-logo-fallback {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-weight: 700;
+      }
+      .login-card h2 {
+        margin: 0 0 8px;
+        font-size: 1.9rem;
+      }
+
+      .login-card .subtitle {
+        margin: 0 0 24px;
+        color: var(--text-soft);
+        font-size: 0.95rem;
+      }
+
+      .field {
+        margin-bottom: 14px;
+      }
+
+      .field label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.93rem;
+        font-weight: 600;
+      }
+
+      .field input[type="text"],
+      .field input[type="password"],
+      .field input[type="email"] {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+      }
+
+      .field input:focus {
+        border-color: #64a35f;
+        box-shadow: 0 0 0 4px rgba(100, 163, 95, 0.15);
+      }
+
+      .remember-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin: 2px 0 18px;
+        font-size: 0.92rem;
+      }
+
+      .remember-row label {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .forgot-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .forgot-link:hover { text-decoration: underline; }
+
+      .login-btn, .google-btn {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: transform .12s ease, opacity .2s ease;
+      }
+
+      .login-btn {
+        background: linear-gradient(135deg, #256d1f, #3f9140);
+        color: #fff;
+      }
+
+      .google-btn {
+        margin-top: 12px;
+        background: #fff;
+        color: #111827;
+        border: 1px solid #d1d5db;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+      }
+
+      .login-btn:hover, .google-btn:hover { transform: translateY(-1px); }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #9ca3af;
+        margin: 18px 0 6px;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e5e7eb;
+      }
+
+      .links {
+        margin-top: 22px;
+        text-align: center;
+        font-size: 0.94rem;
+      }
+
+      .links a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .links a:hover { text-decoration: underline; }
+
+      .errorlist {
+        margin: 0 0 12px;
+        padding: 10px 12px;
+        list-style: none;
+        border-radius: 10px;
+        background: #fff1f2;
+        color: #be123c;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 880px) {
+        .login-wrapper {
+          grid-template-columns: 1fr;
+        }
+
+        .login-cover {
+          padding: 28px;
+        }
+
+        .login-card {
+          padding: 30px 24px;
+        }
+
+        .login-brand {
+          margin-bottom: 14px;
+        }
+
+        .login-logo {
+          max-width: 180px;
+        }
+      }
+    </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <aside class="login-cover">
+      <div>
+        <span class="brand-tag">🌿 Plataforma ColaboraPANC</span>
+        <h1>Mapeamento colaborativo com impacto real.</h1>
+        <p>Entre para registrar, monitorar e fortalecer o histórico de PANCs com dados ambientais da sua região.</p>
+      </div>
+      <p>Conecte conhecimento local, biodiversidade e tecnologia em um só lugar.</p>
+    </aside>
+
+    <main class="login-card">
+      <div class="login-brand">
+        {% static_asset_exists 'img/logo_colaborapanc.png' as has_brand_logo %}
+        {% if has_brand_logo %}
+          <img class="login-logo" src="{% static 'img/logo_colaborapanc.png' %}" alt="Logo ColaboraPANC">
+        {% else %}
+          <span class="login-logo-fallback" aria-label="ColaboraPANC">🌿 ColaboraPANC</span>
+        {% endif %}
+      </div>
+      <h2>Entrar</h2>
+      <p class="subtitle">Acesse sua conta para continuar.</p>
+
+      {% if form.non_field_errors %}
+        <ul class="errorlist">
+          {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <form method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="{{ form.login.id_for_label }}">Login</label>
+          {{ form.login }}
+          {{ form.login.errors }}
+        </div>
+
+        <div class="field">
+          <label for="{{ form.password.id_for_label }}">Senha</label>
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+
+        <div class="remember-row">
+          {% if form.remember %}
+            <label for="{{ form.remember.id_for_label }}">{{ form.remember }} Lembrar de mim</label>
+          {% else %}
+            <span></span>
+          {% endif %}
+          <a class="forgot-link" href="{% url 'account_reset_password' %}">Esqueceu sua senha?</a>
+        </div>
+
+        <button class="login-btn" type="submit">Entrar</button>
+      </form>
+
+      <div class="divider">ou</div>
+      {% google_social_login_enabled as has_google_social_login %}
+      {% if has_google_social_login %}
+        {% providers_media_js %}
+        <a href="{% provider_login_url 'google' %}" class="google-btn">
+          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style="width:18px;height:18px;"> Entrar com Google
+        </a>
+      {% endif %}
+
+      <div class="links">
+        <a href="{% url 'account_signup' %}">Criar conta</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

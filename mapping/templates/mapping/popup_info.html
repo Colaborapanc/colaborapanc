@@ -1,0 +1,31 @@
+<div class="popup-info">
+
+  <!-- Informações gerais do ponto -->
+  <h3>{{ ponto.nome_popular }}</h3>
+  <p><strong>Nome científico:</strong> <em>{{ ponto.nome_cientifico }}</em></p>
+  <p><strong>Estado:</strong> {{ ponto.estado }} | <strong>Cidade:</strong> {{ ponto.cidade }}</p>
+  <p><strong>Ambiente:</strong> {{ ponto.tipo_ambiente }}</p>
+
+  <!-- Alerta climático se existirem registros -->
+  <div class="alertas" style="margin-top: 1rem;">
+    <h4 style="color: #e67e22;">⚠️ Alertas Climáticos</h4>
+
+    {% if ponto.alertas.all %}
+      {% for alerta in ponto.alertas.all|slice:":3" %}
+        <div class="alerta-item" style="background: #fff8e1; padding: 10px; border-left: 5px solid #ffa726; margin-bottom: 8px;">
+          <p><strong>{{ alerta.tipo }}</strong></p>
+          <p>{{ alerta.descricao }}</p>
+          <p><small>⏱ {{ alerta.inicio }} até {{ alerta.fim }} | Fonte: {{ alerta.fonte }}</small></p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p style="color: #777;">Nenhum alerta climático recente registrado para este ponto.</p>
+    {% endif %}
+  </div>
+
+  <!-- Link para ver mais (abre tela geral de alertas) -->
+  <div style="margin-top: 1rem;">
+    <a href="{% url 'historico_alertas' %}?ponto={{ ponto.nome_popular }}" target="_blank" style="font-size: 0.9rem; color: #3498db;">🗂️ Ver histórico completo de alertas</a>
+  </div>
+
+</div>

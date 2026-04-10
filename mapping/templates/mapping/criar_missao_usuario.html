@@ -1,0 +1,71 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Nova Missão Colaborativa{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <h2 class="mb-3 fw-bold text-success">
+                        <span class="bi bi-flag"></span> Criar Missão para a Comunidade
+                    </h2>
+                    <p class="text-muted mb-4">
+                        Proponha desafios que estimulem ações, engajem pessoas e tornem o mapeamento mais divertido!
+                        <br>
+                        <small>Dica: Seja claro, criativo e explique como a missão será completada pelos outros usuários.</small>
+                    </p>
+                    <form method="post" autocomplete="off" id="form-missao">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label fw-semibold">Título da Missão <span class="text-danger">*</span></label>
+                            <input type="text" name="titulo" id="titulo" class="form-control" maxlength="150" required placeholder="Ex: Encontrar 3 PANCs no seu bairro">
+                        </div>
+                        <div class="mb-3">
+                            <label for="descricao" class="form-label fw-semibold">Descrição <span class="text-danger">*</span></label>
+                            <textarea name="descricao" id="descricao" class="form-control" rows="4" maxlength="700" required
+                                      placeholder="Explique como participar, critérios de validação ou dicas para completar a missão."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-7 mb-3">
+                                <label for="tipo" class="form-label fw-semibold">Tipo <span class="text-danger">*</span></label>
+                                <select name="tipo" id="tipo" class="form-select" required>
+                                    <option value="colaborativa" selected>Colaborativa (para todos)</option>
+                                    <option value="diaria">Diária</option>
+                                    <option value="semanal">Semanal</option>
+                                    <option value="especial">Especial</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5 mb-3">
+                                <label for="pontos" class="form-label fw-semibold">Pontuação <span class="text-danger">*</span></label>
+                                <input type="number" name="pontos" id="pontos" class="form-control" min="1" max="500" value="10" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold fs-5">
+                            <span class="bi bi-plus-circle"></span> Criar Missão
+                        </button>
+                        <div id="form-feedback" class="mt-3"></div>
+                    </form>
+                </div>
+            </div>
+            <div class="alert alert-info mt-3 small shadow-sm">
+                <span class="bi bi-lightbulb me-1"></span>
+                <strong>Exemplo:</strong> "Desafie a comunidade a cadastrar 5 novas PANCs em áreas urbanas esta semana, incluindo foto e localização precisa."
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.getElementById("form-missao")?.addEventListener("submit", function(e){
+    var btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Enviando...';
+});
+</script>
+{% endblock %}

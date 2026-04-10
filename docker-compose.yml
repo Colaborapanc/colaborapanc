@@ -1,0 +1,49 @@
+services:
+
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: colaborapanc_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-pancdb}
+      POSTGRES_USER: ${DB_USER:-pancuser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-pancpass123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-pancuser} -d ${DB_NAME:-pancdb}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: colaborapanc_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: "5432"
+    volumes:
+      - .:/app
+      - static_files:/app/static_collected
+      - media_files:/app/media
+    ports:
+      - "8000:8000"
+    # Development override: use Django dev server with auto-reload
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  postgres_data:
+  static_files:
+  media_files:

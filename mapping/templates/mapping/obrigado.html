@@ -1,0 +1,8 @@
+{% extends "mapping/base.html" %}
+{% block content %}
+<div class="container" style="max-width:500px; margin:3rem auto; background:#fff; border-radius:10px; box-shadow:0 4px 16px #0002; padding:2rem; text-align:center;">
+    <h2>Cadastro recebido!</h2>
+    <p>Seu registro foi enviado para validação e, em breve, poderá aparecer no mapa. Obrigado por colaborar com o projeto PANCs!</p>
+    <a href="{% url 'mapa' %}" class="btn-adicionar">? Voltar ao mapa</a>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Conquistas e Badges Disponíveis{% endblock %}
+
+{% block content %}
+<div class="container painel-conquistas py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><span class="bi bi-stars text-success me-2"></span> Conquistas Disponíveis</h2>
+        <a href="{% url 'painel_gamificacao' %}" class="btn btn-outline-secondary">
+            ← Voltar ao Painel
+        </a>
+    </div>
+
+    <div class="alert alert-info text-center mb-4 fs-5">
+        <span class="bi bi-trophy-fill text-warning"></span>
+        Desbloqueie badges e conquistas temáticas ao contribuir no mapa de PANCs, validar registros e participar da comunidade!
+    </div>
+
+    <div class="row g-4">
+        {% for conquista in conquistas %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <img src="{{ conquista.imagem.url }}" alt="{{ conquista.nome }}" class="rounded-circle shadow" style="width:72px; height:72px; object-fit:cover;">
+                    </div>
+                    <h5 class="card-title mb-2">
+                        {{ conquista.nome }}
+                        {% if conquista.raro %}
+                            <span class="badge bg-gradient bg-warning text-dark ms-1" title="Conquista rara"><i class="bi bi-gem"></i> Rara</span>
+                        {% endif %}
+                        {% if conquista.legenda %}
+                            <span class="badge bg-success ms-1">{{ conquista.legenda }}</span>
+                        {% endif %}
+                    </h5>
+                    <p class="card-text mb-1 text-muted fs-6">{{ conquista.descricao }}</p>
+                    {% if conquista.requisitos %}
+                        <p class="small text-secondary">
+                            <span class="bi bi-lightbulb me-1"></span>
+                            <span class="fst-italic">{{ conquista.requisitos }}</span>
+                        </p>
+                    {% endif %}
+                    {% if conquista.dica %}
+                        <div class="alert alert-success py-1 my-2 small">
+                            <span class="bi bi-emoji-smile"></span>
+                            <b>Dica:</b> {{ conquista.dica }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% if conquista.desbloqueada %}
+                    <div class="card-footer text-center bg-success text-white fw-bold">
+                        <span class="bi bi-unlock-fill"></span> Você já conquistou!
+                    </div>
+                {% else %}
+                    <div class="card-footer text-center bg-light text-muted">
+                        <span class="bi bi-lock-fill"></span> Ainda não desbloqueada
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-5">
+            Nenhuma conquista disponível no momento.
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="alert alert-light border d-flex align-items-center mt-5 mb-3">
+        <span class="bi bi-flower3 text-success fs-2 me-3"></span>
+        <span>
+            Novas conquistas chegam a cada temporada. Mantenha seu perfil atualizado e seja um verdadeiro <b>Caçador de PANCs</b>!
+        </span>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    // Animação sutil para conquistas desbloqueadas
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".card-footer.bg-success").forEach(function(footer) {
+            footer.parentElement.classList.add("border-success");
+        });
+    });
+</script>
+<style>
+    .bg-gradient {
+        background: linear-gradient(90deg, #ffe486 20%, #fff6b6 60%, #fffbe0 100%);
+    }
+</style>
+{% endblock %}

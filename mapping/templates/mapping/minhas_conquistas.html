@@ -1,0 +1,153 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Minhas Conquistas{% endblock %}
+
+{% block content %}
+<div class="container painel-conquistas py-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>
+            <span class="bi bi-trophy-fill text-success me-2"></span> Minhas Conquistas
+        </h2>
+        <a href="{% url 'painel_gamificacao' %}" class="btn btn-outline-secondary">
+            ← Voltar ao Painel
+        </a>
+    </div>
+
+    <!-- Barra de pontuação total e nível -->
+    <div class="mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <div>
+                <span class="badge bg-primary fs-5">Pontuação total:</span>
+                <span class="fw-bold fs-3 text-success ms-2">{{ pontos }}</span>
+            </div>
+            <div>
+                <span class="badge bg-success fs-5">Nível:</span>
+                <span class="fw-bold fs-4 ms-2">{{ nivel_nome }}</span>
+            </div>
+            <div>
+                <span class="badge bg-info fs-5">Total de insígnias:</span>
+                <span class="fw-bold fs-4 ms-2">{{ badges|length }}</span>
+            </div>
+        </div>
+        <div class="progress my-2" style="height: 10px;">
+          <div class="progress-bar" role="progressbar"
+               style="width: {{ progresso_nivel }}%;"
+               aria-valuenow="{{ progresso_nivel }}" aria-valuemin="0" aria-valuemax="100">
+          </div>
+        </div>
+        <small class="text-muted">
+            Próximo nível em {{ pontos_para_proximo }} pts
+        </small>
+    </div>
+
+    <!-- Busca/filtro de conquistas -->
+    <form class="row mb-4" method="get">
+        <div class="col-md-5">
+            <input type="text" class="form-control" name="busca" placeholder="Buscar insígnia..." value="{{ request.GET.busca }}">
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="categoria">
+                <option value="">Todas as categorias</option>
+                {% for cat in categorias %}
+                    <option value="{{ cat }}" {% if request.GET.categoria == cat %}selected{% endif %}>{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" name="status">
+                <option value="">Todas</option>
+                <option value="conquistada" {% if request.GET.status == "conquistada" %}selected{% endif %}>Conquistadas</option>
+                <option value="nao-conquistada" {% if request.GET.status == "nao-conquistada" %}selected{% endif %}>Não conquistadas</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success w-100" type="submit">
+                <i class="bi bi-search"></i> Filtrar
+            </button>
+        </div>
+    </form>
+
+    <!-- Exibição de badges conquistados -->
+    <div class="row g-4">
+        {% for badge in badges %}
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 badge-card {% if badge.novo %}pulse{% endif %}">
+                <div class="card-body text-center">
+                    <img src="{{ badge.imagem.url }}" alt="{{ badge.nome }}" width="74" class="mb-2" style="filter: drop-shadow(0 0 8px #86dc6d77);">
+                    <h5 class="card-title mb-0">{{ badge.nome }}</h5>
+                    <small class="text-muted">{{ badge.categoria }}</small>
+                    <p class="card-text mt-2 mb-1" style="min-height: 48px;">
+                        {{ badge.descricao }}
+                    </p>
+                    <span class="badge bg-success mb-2">Conquistada em {{ badge.data|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-4">
+            <div class="alert alert-info fs-5">
+                Você ainda não conquistou nenhuma insígnia.<br>
+                <a href="{% url 'painel_gamificacao' %}" class="btn btn-success mt-2">Contribua para ganhar conquistas!</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Progressos para próximos badges (gamificação extra) -->
+    <div class="my-5">
+        <h5 class="fw-bold mb-3">Progresso para próximas conquistas</h5>
+        <div class="row g-4">
+            {% for badge in badges_pendentes %}
+            <div class="col-md-4">
+                <div class="card border-secondary h-100">
+                    <div class="card-body text-center">
+                        <img src="{{ badge.imagem.url }}" alt="{{ badge.nome }}" width="60" style="filter: grayscale(1) opacity(0.5);">
+                        <h6 class="card-title mt-2">{{ badge.nome }}</h6>
+                        <small class="text-muted">{{ badge.categoria }}</small>
+                        <div class="progress my-2" style="height: 8px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: {{ badge.progresso }}%;" aria-valuenow="{{ badge.progresso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span class="small">Faltam {{ badge.faltam }} para desbloquear</span>
+                        <p class="text-muted mt-2" style="font-size:0.93em;">{{ badge.descricao }}</p>
+                        <span class="badge bg-light border text-secondary">Ainda não conquistada</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Curiosidades gamificadas -->
+    <div class="mt-5 mb-3">
+        <h6 class="fw-bold mb-2">🥦 Curiosidade do dia</h6>
+        <div class="alert alert-light border d-flex align-items-center">
+            <span class="bi bi-emoji-laughing me-3 text-success fs-2"></span>
+            <span>{{ curiosidade|default:"Sabia que tem badge secreta de 'Mestre do Cerrado'? Descubra como desbloquear!" }}</span>
+        </div>
+    </div>
+
+    <!-- Botão para explorar novas missões/desafios -->
+    <div class="text-center my-4">
+        <a href="{% url 'missoes' %}" class="btn btn-outline-primary btn-lg px-5">
+            🌱 Ver Missões & Desafios
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<style>
+.badge-card.pulse {
+    animation: pulseBadge 1.7s infinite;
+    border: 2.2px solid #b5efac;
+}
+@keyframes pulseBadge {
+    0% { box-shadow: 0 0 0 0 #8fd98877; }
+    70% { box-shadow: 0 0 0 8px #bff5ba22; }
+    100% { box-shadow: 0 0 0 0 #8fd98800; }
+}
+</style>
+{% endblock %}

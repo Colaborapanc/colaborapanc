@@ -1,0 +1,260 @@
+{% extends "mapping/base.html" %}
+{% block title %}Painel de Integrações{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0"><i class="bi bi-hdd-network"></i> Saúde das integrações</h3>
+    <div class="d-flex gap-2">
+      <button class="btn btn-success btn-sm" type="button" id="btn-testar-todas">Testar todas</button>
+      <a href="{% url 'painel_admin_gamificacao' %}" class="btn btn-outline-secondary btn-sm">Voltar</a>
+    </div>
+  </div>
+  <div id="status-testes" class="mb-2"></div>
+  <div id="resultado-testes" class="mb-3"></div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-3"><div class="card border-success"><div class="card-body"><small>Online</small><div class="fs-4 text-success">{{ resumo.online }}</div></div></div></div>
+    <div class="col-md-3"><div class="card border-warning"><div class="card-body"><small>Degradada</small><div class="fs-4 text-warning">{{ resumo.degradada }}</div></div></div></div>
+    <div class="col-md-3"><div class="card border-danger"><div class="card-body"><small>Offline</small><div class="fs-4 text-danger">{{ resumo.offline }}</div></div></div></div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Integração</th>
+              <th>Tipo</th>
+              <th>Status</th>
+              <th>Configuração</th>
+              <th>Operacional</th>
+              <th>Última verificação</th>
+              <th>Último sucesso</th>
+              <th>Última falha</th>
+              <th>Problema recente</th>
+              <th>Variáveis esperadas</th>
+              <th>Latência</th>
+              <th>Resumo técnico</th>
+              <th>Tempo resposta</th>
+              <th>Erro</th>
+              <th>Ação</th>
+              <th>Logs recentes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in integracoes %}
+            <tr data-integracao="{{ item.nome }}">
+              <td>{{ item.nome }}</td>
+              <td>{{ item.tipo_integracao|default:"Não informado" }}</td>
+              <td>
+                {% if item.status_detalhado == 'online' %}
+                  <span class="badge bg-success">Online</span>
+                {% elif item.status_detalhado == 'parcial' %}
+                  <span class="badge bg-warning text-dark">Parcial</span>
+                {% elif item.status_detalhado == 'verificacao_limitada' %}
+                  <span class="badge bg-warning text-dark">Parcial (verificação limitada)</span>
+                {% elif item.status_detalhado == 'nao_configurada' %}
+                  <span class="badge bg-secondary">Não configurada</span>
+                {% elif item.status_detalhado == 'auth_error' %}
+                  <span class="badge bg-danger">Erro de autenticação</span>
+                {% elif item.status_detalhado == 'forbidden' %}
+                  <span class="badge bg-danger">Sem permissão</span>
+                {% elif item.status_detalhado == 'rate_limit' %}
+                  <span class="badge bg-warning text-dark">Rate limit</span>
+                {% elif item.status_detalhado == 'parse_error' %}
+                  <span class="badge bg-danger">Erro de parsing</span>
+                {% elif item.status_detalhado == 'schema_error' %}
+                  <span class="badge bg-warning text-dark">Schema inválido</span>
+                {% elif item.status_detalhado == 'response_empty' %}
+                  <span class="badge bg-warning text-dark">Resposta vazia</span>
+                {% elif item.status_detalhado == 'connection_error' %}
+                  <span class="badge bg-danger">Falha de conexão</span>
+                {% elif item.status_detalhado == 'endpoint_error' %}
+                  <span class="badge bg-danger">Endpoint com erro</span>
+                {% elif item.status_detalhado == 'service_unavailable' %}
+                  <span class="badge bg-danger">Serviço indisponível</span>
+                {% elif item.status_detalhado == 'http_error' %}
+                  <span class="badge bg-danger">Erro HTTP</span>
+                {% elif item.status_detalhado == 'timeout' %}
+                  <span class="badge bg-danger-subtle text-danger">Timeout</span>
+                {% else %}
+                  <span class="badge bg-danger">Offline</span>
+                {% endif %}
+              </td>
+              <td>{% if item.configurada %}<span class="text-success">Configurada</span>{% else %}<span class="text-muted">Pendente</span>{% endif %}</td>
+              <td>{% if item.operacional %}<span class="text-success">Sim</span>{% else %}<span class="text-danger">Não</span>{% endif %}</td>
+              <td>{% if item.ultima_verificacao %}{{ item.ultima_verificacao }}{% else %}-{% endif %}</td>
+              <td>{% if item.ultimo_teste_bem_sucedido %}{{ item.ultimo_teste_bem_sucedido }}{% else %}-{% endif %}</td>
+              <td>{% if item.ultima_falha_em %}{{ item.ultima_falha_em }}{% else %}-{% endif %}</td>
+              <td>{{ item.ultimo_tipo_problema|default:"-" }}</td>
+              <td>
+                {% if item.variaveis_esperadas %}
+                  <small>
+                    {% for env in item.variaveis_esperadas %}
+                      <code>{{ env }}</code>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    {% if item.env_vars_ausentes %}<br><span class="text-danger">Faltando: {{ item.env_vars_ausentes|join:", " }}</span>{% endif %}
+                  </small>
+                {% else %}
+                  <small>-</small>
+                {% endif %}
+              </td>
+              <td>
+                {% if item.latencia_nivel == 'baixa' %}
+                  <span class="badge bg-success-subtle text-success">Baixa</span>
+                {% elif item.latencia_nivel == 'media' %}
+                  <span class="badge bg-warning-subtle text-warning-emphasis">Média</span>
+                {% elif item.latencia_nivel == 'alta' %}
+                  <span class="badge bg-danger-subtle text-danger">Alta</span>
+                {% else %}
+                  <span class="badge bg-secondary">n/d</span>
+                {% endif %}
+              </td>
+              <td><small>{{ item.resposta_resumida|default:'-' }}{% if item.mensagem_tecnica %}<br><span class="text-muted">{{ item.mensagem_tecnica }}</span>{% endif %}</small></td>
+              <td>{% if item.tempo_resposta_ms %}{{ item.tempo_resposta_ms }} ms{% else %}-{% endif %}</td>
+              <td><small class="text-danger">{{ item.ultimo_erro|default:'-' }}</small></td>
+              <td>
+                <button class="btn btn-outline-primary btn-sm btn-testar-uma" type="button" data-integration-name="{{ item.nome }}">
+                  Testar novamente
+                </button>
+              </td>
+              <td>
+                {% for log in item.logs_recentes|slice:':3' %}
+                  <div><small>[{{ log.status }}] {{ log.detalhe }} ({{ log.tempo_resposta_ms }}ms)</small></div>
+                {% empty %}
+                  <small>-</small>
+                {% endfor %}
+              </td>
+            </tr>
+            {% endfor %}
+            {% if not integracoes %}
+            <tr>
+              <td colspan="16" class="text-center text-muted py-4">Nenhuma integração monitorada até o momento.</td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return '';
+  }
+
+  function renderResultados(resultados) {
+    const container = document.getElementById('resultado-testes');
+    const status = document.getElementById('status-testes');
+    if (!container) return;
+    if (!Array.isArray(resultados) || resultados.length === 0) {
+      container.innerHTML = '<div class="alert alert-secondary mb-0">Nenhum resultado retornado.</div>';
+      return;
+    }
+
+    const sucessos = resultados.filter((item) => item.sucesso).length;
+    if (status) {
+      status.innerHTML = `<div class="alert ${sucessos === resultados.length ? 'alert-success' : 'alert-warning'} py-2">
+        ${sucessos}/${resultados.length} integrações responderam com sucesso.
+      </div>`;
+    }
+
+    const itens = resultados.map((item) => {
+      const badge = item.sucesso
+        ? '<span class="badge bg-success">Sucesso</span>'
+        : '<span class="badge bg-danger">Falha</span>';
+      const tempo = item.tempo_resposta_ms ? `${item.tempo_resposta_ms} ms` : 'n/d';
+      const erroTipo = item.error_type || 'nenhum';
+      const mensagem = item.mensagem_amigavel || item.resposta_resumida || 'Sem mensagem.';
+      return `
+        <li class="list-group-item d-flex justify-content-between align-items-start">
+          <div>
+            <div class="fw-semibold">${item.nome} ${badge}</div>
+                    <div class="small text-muted">${item.tipo_integracao || 'Não informado'} • Tempo: ${tempo}</div>
+                    <div class="small">${mensagem}</div>
+                    <div class="small text-muted">Tipo de erro: ${erroTipo}</div>
+                    <div class="small text-muted">Últ. sucesso: ${item.ultimo_teste_bem_sucedido || 'n/d'} • Últ. falha: ${item.ultima_falha_em || 'n/d'}</div>
+                  </div>
+                  <div class="small text-end">
+                    <div>Config.: ${item.configurada ? 'Sim' : 'Não'}</div>
+                    <div>Oper.: ${item.operacional ? 'Sim' : 'Não'}</div>
+                    <div>Latência: ${item.latencia_nivel || 'n/d'}</div>
+                  </div>
+                </li>
+              `;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="card shadow-sm">
+        <div class="card-header bg-light"><strong>Resultado do último teste</strong></div>
+        <ul class="list-group list-group-flush">${itens}</ul>
+      </div>
+    `;
+  }
+
+  async function executarTeste(integrationName) {
+    const url = "{% url 'api_testar_integracoes' %}";
+    const payload = integrationName ? { integration_name: integrationName } : {};
+    const container = document.getElementById('resultado-testes');
+    const status = document.getElementById('status-testes');
+    const btnGlobal = document.getElementById('btn-testar-todas');
+    const botoesIndividuais = document.querySelectorAll('.btn-testar-uma');
+    if (btnGlobal) btnGlobal.disabled = true;
+    botoesIndividuais.forEach((btn) => { btn.disabled = true; });
+    if (status) {
+      status.innerHTML = '<div class="alert alert-info py-2 mb-2">Executando testes. Aguarde...</div>';
+    }
+    if (container) {
+      container.innerHTML = '<div class="alert alert-info mb-0">Executando testes de integração...</div>';
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        const detail = data?.detail || 'Falha ao executar testes.';
+        throw new Error(detail);
+      }
+
+      renderResultados(data.resultados || []);
+    } catch (error) {
+      if (container) {
+        container.innerHTML = `<div class="alert alert-danger mb-0">${error.message || 'Erro ao testar integrações.'}</div>`;
+      }
+      if (status) {
+        status.innerHTML = '<div class="alert alert-danger py-2 mb-2">Falha ao executar os testes de integração.</div>';
+      }
+    } finally {
+      if (btnGlobal) btnGlobal.disabled = false;
+      botoesIndividuais.forEach((btn) => { btn.disabled = false; });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnTodas = document.getElementById('btn-testar-todas');
+    if (btnTodas) {
+      btnTodas.addEventListener('click', () => executarTeste(null));
+    }
+    document.querySelectorAll('.btn-testar-uma').forEach((btn) => {
+      btn.addEventListener('click', () => executarTeste(btn.dataset.integrationName));
+    });
+  });
+</script>
+{% endblock %}

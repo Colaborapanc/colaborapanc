@@ -1,0 +1,61 @@
+{
+  "expo": {
+    "name": "ColaboraPANC",
+    "slug": "colaborapanc",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "colaborapanc",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f6faf7"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#4CAF50"
+        }
+      ],
+      "expo-localization"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.colaborapanc.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "ColaboraPANC precisa acessar sua localização para mostrar PANCs próximas.",
+        "NSCameraUsageDescription": "ColaboraPANC precisa acessar a câmera para tirar fotos de PANCs.",
+        "NSPhotoLibraryUsageDescription": "ColaboraPANC precisa acessar suas fotos para selecionar imagens de PANCs."
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.colaborapanc.app",
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#d2fce9"
+      }
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    },
+    "description": "Mapa colaborativo, gamificado e ecológico de PANCs para todo Brasil."
+  }
+}

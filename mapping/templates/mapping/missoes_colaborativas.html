@@ -1,0 +1,91 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Missões Colaborativas{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <span class="bi bi-people-fill text-primary"></span>
+            Missões Colaborativas da Comunidade
+        </h2>
+        <a href="{% url 'criar_missao_usuario' %}" class="btn btn-success rounded-pill">
+            <span class="bi bi-calendar-plus"></span> Criar Nova Missão
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle table-hover">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Tipo</th>
+                    <th>Pontos</th>
+                    <th>Status</th>
+                    <th>Criador</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in pendentes %}
+                <tr>
+                    <td>{{ m.titulo }}</td>
+                    <td>{{ m.get_tipo_display }}</td>
+                    <td>{{ m.pontos }}</td>
+                    <td>
+                        {% if m.ativa %}
+                            <span class="badge bg-success">Ativa</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inativa</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ m.criador.username|default:"-" }}</td>
+                    <td>
+                        <a href="{% url 'concluir_missao_usuario' m.id %}" class="btn btn-outline-success btn-sm rounded-pill">
+                            <span class="bi bi-flag"></span> Participar
+                        </a>
+                        <a href="{% url 'ranking_missao' m.id %}" class="btn btn-outline-info btn-sm rounded-pill ms-1">
+                            <span class="bi bi-trophy"></span> Ranking
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-muted text-center">Nenhuma missão colaborativa disponível no momento.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h4 class="mt-5 mb-3"><span class="bi bi-check2-circle text-success"></span> Missões Colaborativas Concluídas</h4>
+    <div class="table-responsive">
+        <table class="table align-middle table-striped">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Pontos</th>
+                    <th>Criador</th>
+                    <th>Data de Conclusão</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in concluidas_info %}
+                <tr>
+                    <td>{{ c.missao.titulo }}</td>
+                    <td>{{ c.pontos }}</td>
+                    <td>{{ c.criador.username|default:"-" }}</td>
+                    <td>
+                        {{ c.data_conclusao|date:"d/m/Y H:i" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted text-center">Você ainda não concluiu missões colaborativas.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

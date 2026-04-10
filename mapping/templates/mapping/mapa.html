@@ -1,0 +1,371 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Mapa Colaborativo de PANCs{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3 px-2 px-md-4">
+    <div class="row g-3">
+        <!-- PAINEL LATERAL -->
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="card shadow-sm p-3 mb-3">
+                <h5 class="fw-bold text-success mb-2">
+                    <i class="bi bi-flower2"></i> Mapa Colaborativo de PANCs
+                </h5>
+                <p class="text-muted small mb-3">
+                    Encontre e compartilhe plantas alimentícias não convencionais.
+                </p>
+                {% if user.is_authenticated %}
+                  {% if user.is_staff or user.is_superuser or is_revisor %}
+                    <a href="{% url 'alerta_novo' %}" class="btn btn-sm btn-warning w-100 mb-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Alerta Climático
+                    </a>
+                  {% endif %}
+                {% endif %}
+                <a href="{% url 'lista_alertas' %}" class="btn btn-sm btn-outline-warning w-100 mb-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-clock-history"></i> Histórico
+                </a>
+                <a href="{% url 'cadastrar_ponto' %}" class="btn btn-sm btn-success w-100 mb-3 d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-plus-circle"></i> Novo Ponto
+                </a>
+                <!-- FILTROS -->
+                <form id="filtros-mapa">
+                    <div class="mb-2">
+                        <label class="form-label">Nome popular</label>
+                        <input type="text" id="filtro-nome" class="form-control form-control-sm" placeholder="Ex: Ora-pro-nóbis">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Tipo de local</label>
+                        <select id="filtro-tipo" class="form-select form-select-sm">
+                            <option value="">Todos</option>
+                            <option value="quintal">Quintal</option>
+                            <option value="reserva">Reserva</option>
+                            <option value="rua">Beira de rua</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Cidade</label>
+                        <input type="text" id="filtro-cidade" class="form-control form-control-sm" placeholder="Ex: Belo Horizonte">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Estado</label>
+                        <input type="text" id="filtro-estado" class="form-control form-control-sm" placeholder="Ex: MG">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Grupo/Comunidade</label>
+                        <select id="filtro-grupo" class="form-select form-select-sm">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="btn-filtrar" class="btn btn-sm btn-outline-success w-100 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                </form>
+                <div id="mapa-feedback" class="mt-2 small text-muted" aria-live="polite"></div>
+                <!-- LEGENDA -->
+                <div class="mt-4">
+                    <span class="badge rounded-pill bg-light border text-success px-3 py-2 w-100 d-flex justify-content-center align-items-center gap-2">
+                        <i class="bi bi-geo-alt"></i> <span id="qtd-pontos">0</span> pontos exibidos
+                    </span>
+                    <div class="d-flex flex-column gap-2 small text-muted mt-2">
+                        <div><img src="https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-green.png" width="14"> Validado</div>
+                        <div><img src="https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-yellow.png" width="14"> Em validação</div>
+                        <div><img src="https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-red.png" width="14"> Reprovado</div>
+                        <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#8fd6ac;opacity:.35;"></span> Halo suave de ocorrência</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MAPA -->
+        <div class="col-12 col-md-8 col-lg-9">
+            <div class="rounded shadow-sm border" style="overflow: hidden;">
+                <div id="map" style="width: 100%; height: 82vh; min-height: 400px;">
+                    <noscript><p class="text-center text-danger">Ative o JavaScript para visualizar o mapa.</p></noscript>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+/* --- POPUP MODERNO E FLUIDO --- */
+.leaflet-popup-content-wrapper {
+    background: rgba(255,255,255,0.94) !important;
+    box-shadow: 0 6px 30px 0 #0dbd6e1a;
+    border-radius: 1.18em !important;
+    border: 1.5px solid #d2fce9 !important;
+    color: #12843e !important;
+    backdrop-filter: blur(9px);
+    padding-bottom: 0.3em;
+}
+.popup-header-flex {
+    display: flex; align-items: flex-start; gap: 14px; margin-bottom: 2px;
+}
+.popup-header-title {
+    flex: 1;
+    font-size: 1.18em;
+    color: #149056;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.06em;
+    line-height: 1.22;
+}
+.popup-badges-alertas {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 5px; margin-left: 6px;
+}
+.popup-alert-dot {
+    display: inline-block; width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid #fff; box-shadow:0 0 4px #2ad26c60; margin-bottom: 1.2px; 
+    transition: box-shadow 0.15s, border 0.17s; cursor: pointer;
+}
+.popup-alert-dot:hover { box-shadow: 0 0 12px #12d27b9a; border: 2.3px solid #60fbd0; }
+.popup-historico-link {
+    font-size: 0.78em; color: #ef3939; text-decoration: none;
+    margin-top: 2px; margin-bottom: 2px; cursor: pointer; text-align: right;
+    border: 1.1px solid #f8bcbc; border-radius: 1.1em; background: #fff;
+    display: inline-flex; align-items: center; gap: 3px; padding: 1.5px 10px;
+    transition: background .14s, color .16s, border .14s;
+}
+.popup-historico-link:hover { color: #fff; background: #e34848; border-color: #e34848;}
+.popup-info-bloco {
+    margin-bottom: 7px; margin-top: 4px;
+}
+.popup-foto {
+    max-width: 110px; border-radius: 10px; margin: 7px 0 6px 0; border: 1px solid #f2f2f2;
+    box-shadow: 0 2px 12px #10db6225;
+}
+.popup-acoes {
+    margin-top: 9px; display: flex; flex-wrap: wrap; gap: 10px;
+}
+.popup-relato { color: #226e57; background: #eaf6f0; padding: 4px 8px; border-radius: 7px; font-size:0.98em; margin-top: 4px; }
+</style>
+<script>
+// --- Função: retorna a cor da bolinha pela severidade do alerta
+function corSeveridade(severidade) {
+    if (!severidade) return "#E0E0E0";
+    const sev = severidade.toLowerCase();
+    if (sev.includes("perigo") || sev.includes("alto")) return "#e74c3c";     // vermelho
+    if (sev.includes("moderado")) return "#f7c325";   // amarelo
+    if (sev.includes("observação") || sev.includes("baixo")) return "#27ae60"; // verde
+    return "#E0E0E0";
+}
+
+function extrairCoordenadas(localizacao) {
+    if (Array.isArray(localizacao) && localizacao.length === 2) {
+        return [Number(localizacao[0]), Number(localizacao[1])];
+    }
+    if (localizacao && Array.isArray(localizacao.coordinates) && localizacao.coordinates.length === 2) {
+        return [Number(localizacao.coordinates[0]), Number(localizacao.coordinates[1])];
+    }
+    return null;
+}
+
+// --- Função: gera o HTML do popup do ponto
+function gerarPopupHtml(ponto) {
+    const coordenadas = extrairCoordenadas(ponto.localizacao);
+    const tipoLocalPublico = (ponto.tipo_local_publico || ponto.tipo_local || "local").toLowerCase() === "outro" ? "local" : (ponto.tipo_local_publico || ponto.tipo_local || "local");
+    const parteComestivel = Array.isArray(ponto.parte_comestivel_lista) ? ponto.parte_comestivel_lista.join(', ') : (ponto.parte_comestivel || ponto.parteComestivel || '');
+    const epocaFrutificacao = Array.isArray(ponto.frutificacao_meses) ? ponto.frutificacao_meses.join(', ') : (ponto.epoca_frutificacao || ponto.epocaFrutificacao || ponto.frutificacao || '');
+    const epocaColheita = Array.isArray(ponto.colheita_periodo) ? ponto.colheita_periodo.join(', ') : (ponto.colheita_periodo || ponto.epoca_colheita || ponto.epocaColheita || ponto.colheita || '');
+    const comestivelValor = ponto.comestibilidade_status || '';
+    let html = `<div style="min-width:250px;max-width:340px;padding-top:4px;">`;
+    html += `<div class="popup-header-flex">
+        <img src="https://cdn-icons-png.flaticon.com/512/545/545682.png" width="34">
+        <div class="popup-header-title">
+            ${ponto.nome_popular || "Ponto não identificado"}
+            <span class="badge bg-light border text-dark ms-1">#${ponto.id}</span>
+            ${ponto.nome_cientifico ? `<div class="text-secondary small" style="font-weight:400;">(${ponto.nome_cientifico})</div>` : ""}
+        </div>
+        <div class="popup-badges-alertas">`;
+    // Bolinhas dos 3 últimos alertas
+    if (Array.isArray(ponto.alertas) && ponto.alertas.length > 0) {
+        ponto.alertas.slice(0,3).forEach(alerta => {
+            html += `
+            <span 
+                class="popup-alert-dot"
+                style="background:${corSeveridade(alerta.severidade)}"
+                title="${alerta.tipo || "Alerta"}: ${alerta.severidade || ""} - ${alerta.inicio ? new Date(alerta.inicio).toLocaleString("pt-BR") : ""}"
+                onclick="window.open('{% url 'historico_alertas' %}?ponto=${ponto.id}', '_blank')"
+            ></span>`;
+        });
+        // Se houver menos de 3, preenche neutro
+        for(let i=ponto.alertas.length; i<3; i++)
+            html += `<span class="popup-alert-dot" style="background:#E0E0E0;opacity:0.33;"></span>`;
+    } else {
+        for(let i=0; i<3; i++)
+            html += `<span class="popup-alert-dot" style="background:#E0E0E0;opacity:0.33;"></span>`;
+    }
+html += `
+    <a 
+        class="popup-historico-link"
+        href="{% url 'historico_alertas' %}?ponto=${ponto.id}" target="_blank"
+        title="Ver todos os alertas deste ponto"
+    >
+        <i class="bi bi-clock-history"></i> Histórico de alertas
+    </a>
+`;
+
+    html += `</div></div>`;
+
+    html += `<div class="popup-info-bloco">`;
+    html += `<b>Tipo:</b> ${tipoLocalPublico}<br>`;
+    if (ponto.colaborador) html += `<b>Colaborador:</b> ${ponto.colaborador}<br>`;
+    if (ponto.comestibilidade_confirmada && comestivelValor) html += `<b>Comestível:</b> ${comestivelValor}<br>`;
+    if (ponto.parte_comestivel_confirmada && parteComestivel) html += `<b>Parte comestível:</b> ${parteComestivel}<br>`;
+    if ((ponto.frutificacao_confirmada && epocaFrutificacao) || (ponto.colheita_confirmada && epocaColheita)) {
+        html += `<b>Sazonalidade:</b> `;
+        if (ponto.frutificacao_confirmada && epocaFrutificacao) html += `Frutificação: ${epocaFrutificacao}`;
+        if ((ponto.frutificacao_confirmada && epocaFrutificacao) && (ponto.colheita_confirmada && epocaColheita)) html += ` · `;
+        if (ponto.colheita_confirmada && epocaColheita) html += `Colheita: ${epocaColheita}`;
+        html += `<br>`;
+    }
+    html += `</div>`;
+
+    if (ponto.foto_url) {
+        html += `<img src="${ponto.foto_url}" alt="Foto" class="popup-foto"><br>`;
+    }
+
+    if (ponto.relato) {
+        html += `<div class="popup-relato">${ponto.relato}</div>`;
+    }
+
+    if (Array.isArray(ponto.alertas) && ponto.alertas.length > 0) {
+        html += `<div style="margin-bottom:2px;margin-top:4px;"><b>Alertas recentes:</b></div>`;
+        ponto.alertas.slice(0,3).forEach(alerta => {
+            html += `<div class="mb-1 small" style="margin-left:7px;">
+                <span style="font-size:1.07em;font-weight:500;">${alerta.tipo || ''}</span>
+                <span class="text-muted ms-1">
+                    ${alerta.inicio ? new Date(alerta.inicio).toLocaleString("pt-BR") : ""}
+                    ${alerta.fim ? ' a ' + new Date(alerta.fim).toLocaleString("pt-BR") : ""}
+                    ${alerta.fonte ? `| <span>${alerta.fonte}</span>` : ""}
+                </span>
+                <br>
+                <span>${alerta.descricao || ""}</span>
+                ${(alerta.distancia_metros || alerta.confianca) ? `<br><small class="text-muted">
+                    ${alerta.distancia_metros ? `Distância: ${Math.round(alerta.distancia_metros)} m` : ""}
+                    ${alerta.confianca ? `${alerta.distancia_metros ? " | " : ""}Confiança: ${alerta.confianca}` : ""}
+                </small>` : ""}
+            </div>`;
+        });
+    } else {
+        html += `<div class="d-flex align-items-center gap-2 text-success mt-2 mb-2" style="font-weight:600;font-size:1.05em;">
+            <i class="bi bi-eye-fill"></i> Sem alertas climáticos
+        </div>`;
+    }
+
+    // Botões
+    html += `<div class="popup-acoes">`;
+    if (ponto.pode_editar) {
+        html += `
+            <a href="/editar/${ponto.id}/" class="btn btn-link btn-sm text-success"><i class="bi bi-pencil-square"></i> Editar</a>
+            <a href="/remover/${ponto.id}/" class="btn btn-link btn-sm text-danger"><i class="bi bi-trash3"></i> Remover</a>
+        `;
+    }
+    const googleMapsHref = coordenadas
+        ? `https://www.google.com/maps/search/?api=1&query=${coordenadas[1]},${coordenadas[0]}`
+        : "#";
+    html += `<a href="${googleMapsHref}" target="_blank" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-geo-alt"></i> Ir para o local
+    </a></div>`;
+
+    html += `</div>`;
+    return html;
+}
+
+// === MAPA E FUNCIONALIDADES ===
+let map;
+let markers = [];
+
+function limparMarcadores() {
+    if (!map) return;
+    markers.forEach(layer => map.removeLayer(layer));
+    markers = [];
+    document.getElementById("qtd-pontos").textContent = 0;
+}
+
+function adicionarMarcador(ponto) {
+    const coordenadas = extrairCoordenadas(ponto.localizacao);
+    if (!coordenadas) return;
+    const status = ponto.status_validacao || 'pendente';
+    const iconUrl = status === 'aprovado'
+        ? "https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-green.png"
+        : status === 'reprovado'
+        ? "https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-red.png"
+        : "https://cdn.jsdelivr.net/gh/pointhi/leaflet-color-markers@master/img/marker-icon-2x-yellow.png";
+    const haloColor = status === 'aprovado'
+        ? '#2ca25f'
+        : status === 'reprovado'
+        ? '#d95f5f'
+        : '#f2c94c';
+    const icon = L.icon({ iconUrl, iconSize: [25, 41], iconAnchor: [12, 41] });
+    const latlng = [coordenadas[1], coordenadas[0]];
+    const marker = L.marker(latlng, { icon })
+        .addTo(map)
+        .bindPopup(gerarPopupHtml(ponto));
+    const halo = L.circleMarker(latlng, {
+        radius: status === "aprovado" ? 14 : 11,
+        color: haloColor,
+        weight: 1,
+        opacity: 0.35,
+        fillColor: haloColor,
+        fillOpacity: status === "aprovado" ? 0.16 : 0.10,
+        interactive: false,
+    }).addTo(map);
+    markers.push(halo, marker);
+}
+
+async function carregarPontos() {
+    limparMarcadores();
+    const feedback = document.getElementById('mapa-feedback');
+    const btnFiltrar = document.getElementById('btn-filtrar');
+    if (feedback) feedback.textContent = 'Carregando pontos...';
+    if (btnFiltrar) btnFiltrar.disabled = true;
+    const params = new URLSearchParams({
+        nome: document.getElementById('filtro-nome')?.value || '',
+        tipo_local: document.getElementById('filtro-tipo')?.value || '',
+        cidade: document.getElementById('filtro-cidade')?.value || '',
+        estado: document.getElementById('filtro-estado')?.value || '',
+        grupo: document.getElementById('filtro-grupo')?.value || ''
+    });
+    try {
+        const res = await fetch(`/api/pontos/?${params}`);
+        if (!res.ok) throw new Error('Erro ao buscar pontos.');
+        const pontos = await res.json();
+        if (Array.isArray(pontos)) {
+            pontos.forEach(adicionarMarcador);
+            document.getElementById("qtd-pontos").textContent = pontos.length;
+            if (feedback) {
+                feedback.textContent = pontos.length
+                    ? `${pontos.length} ponto(s) carregado(s).`
+                    : 'Nenhum ponto encontrado com os filtros informados.';
+            }
+        }
+    } catch (err) {
+        if (feedback) feedback.textContent = 'Erro ao carregar pontos. Tente novamente.';
+        console.error(err);
+    } finally {
+        if (btnFiltrar) btnFiltrar.disabled = false;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(() => {
+        map = L.map('map').setView([-14.2, -51.9], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+        document.getElementById('filtros-mapa').addEventListener('submit', e => {
+            e.preventDefault();
+            carregarPontos();
+        });
+        carregarPontos();
+    }, 100);
+});
+</script>
+{% endblock %}

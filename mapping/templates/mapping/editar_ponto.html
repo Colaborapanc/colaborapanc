@@ -1,0 +1,254 @@
+{% extends "mapping/base.html" %}
+{% load static leaflet_tags %}
+
+{% block title %}Editar Ponto de PANC{% endblock %}
+
+{% block head %}
+    {{ block.super }}
+    {% leaflet_css %}
+    {% leaflet_js %}
+    <link rel="stylesheet" href="{% static 'mapapanc/css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        .form-header { display: flex; align-items: center; margin-bottom: 2rem; }
+        .form-header i { font-size: 2.2rem; color: #249251; margin-right: 0.7rem; }
+        .form-card { max-width: 840px; margin: 2.5rem auto; background: #fff;
+            border-radius: 18px; box-shadow: 0 6px 32px rgba(24,32,42,0.09);
+            padding: 2.7rem 2.2rem 2.5rem 2.2rem;}
+        .btn-main { background: linear-gradient(90deg,#249251,#157347); color: #fff;
+            border: none; border-radius: 6px; padding: 0.75rem 2.2rem; font-weight: bold;
+            font-size: 1.07rem; letter-spacing: .03em; transition: background .2s;}
+        .btn-main:hover { background: #157347; }
+        .form-label { font-weight: 600; color: #2e7d32; }
+        .alert { border-radius: 4px; font-size: 0.97rem; margin-top: .5rem; padding: .5rem 1rem;}
+        #map { height: 340px; margin-bottom: 1.2rem; border-radius: 8px; }
+        .form-section { margin-bottom: 1.7rem; }
+        .photo-preview { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1rem; }
+        .photo-preview img { max-width: 180px; max-height: 120px; border-radius: 7px; border: 1px solid #aaa; }
+        .loader {display:none;vertical-align:middle;margin-left:6px;}
+        @media (max-width: 600px) {
+            .form-card { padding: 1rem 0.5rem; }
+            #map { height: 190px; }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="form-card">
+    <div class="form-header">
+        <a href="{% url 'minhas_contribuicoes' %}" title="Voltar"><i class="bi bi-arrow-left-circle"></i></a>
+        <h2 class="mb-0 ms-2">Editar Ponto de PANC</h2>
+    </div>
+    <div class="alert alert-light border mb-4">
+        <div class="small">
+            <strong>Comestível:</strong> {% if form.instance.comestibilidade_confirmada %}{{ form.instance.comestibilidade_status }}{% else %}Não informado{% endif %}
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" id="form-ponto" autocomplete="off">
+        {% csrf_token %}
+        <div class="row g-3 form-section">
+            <div class="col-md-6">
+                <label class="form-label" for="id_nome_popular">Nome popular</label>
+                {{ form.nome_popular }}
+                <datalist id="datalist-nome-popular"></datalist>
+                {% if form.nome_popular.errors %}
+                    <div class="alert alert-danger">{{ form.nome_popular.errors.0|escape }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="id_nome_cientifico">Nome científico</label>
+                {{ form.nome_cientifico }}
+                {% if form.nome_cientifico.errors %}
+                    <div class="alert alert-danger">{{ form.nome_cientifico.errors.0|escape }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="id_tipo_local">Tipo de local</label>
+                {{ form.tipo_local }}
+            </div>
+            <div class="col-md-8">
+                <label class="form-label" for="id_endereco">Endereço</label>
+                {{ form.endereco }}
+                <span id="endereco-loader" class="loader"><i class="bi bi-arrow-repeat spin"></i> Buscando endereço...</span>
+                <button type="button" id="btn-direcionar" class="btn btn-sm btn-outline-primary mt-1">
+                    <i class="bi bi-geo-alt-fill"></i> Abrir no Google Maps
+                </button>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="id_numero">Número</label>
+                {{ form.numero }}
+            </div>
+            <div class="col-md-5">
+                <label class="form-label" for="id_bairro">Bairro</label>
+                {{ form.bairro }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="id_cidade">Cidade</label>
+                {{ form.cidade }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="id_estado">Estado</label>
+                {{ form.estado }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="id_colaborador">Colaborador</label>
+                {{ form.colaborador }}
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="id_relato">Relato/Observação</label>
+                {{ form.relato }}
+            </div>
+        </div>
+        <div class="form-section">
+            <label class="form-label mb-1">Localização no mapa <span style="color:#a00">*</span></label>
+            {{ form.localizacao }}
+            {% if form.localizacao.errors %}
+                <div class="alert alert-danger">{{ form.localizacao.errors.0|escape }}</div>
+            {% endif %}
+            {% leaflet_map "map" callback="initMap" %}
+        </div>
+        <div class="form-section">
+            <label class="form-label" for="id_foto">Foto do ponto</label>
+            <div class="photo-preview" id="photo-preview">
+                {% if form.instance.foto %}
+                    <img src="{{ form.instance.foto.url }}" alt="Foto atual">
+                {% endif %}
+            </div>
+            {{ form.foto }}
+        </div>
+        <div class="alert alert-info mt-3" style="border-radius:12px;">
+            <i class="bi bi-info-circle me-1"></i>
+            <small>
+                Ao salvar, o sistema re-executará o enriquecimento taxonômico automático
+                via <strong>Global Names</strong>, <strong>Tropicos</strong>,
+                <strong>GBIF</strong> e <strong>iNaturalist</strong>.
+            </small>
+        </div>
+        <button type="submit" class="btn btn-main mt-2" id="btn-submit">
+            <i class="bi bi-send-check"></i> Salvar alterações
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+function initMap(map, options) {
+    const inputLatLng = document.getElementById("id_localizacao");
+    let marker = null;
+    let latAtual = null, lngAtual = null;
+    let loader = document.getElementById("endereco-loader");
+
+    // Inicializar marcador existente, se houver valor
+    if (inputLatLng.value) {
+        let match = inputLatLng.value.match(/POINT\(([-\d.]+) ([-\d.]+)\)/);
+        if (match) {
+            lngAtual = parseFloat(match[1]);
+            latAtual = parseFloat(match[2]);
+            marker = L.marker([latAtual, lngAtual]).addTo(map);
+            map.setView([latAtual, lngAtual], 16);
+        }
+    }
+
+    map.on("click", function (e) {
+        const { lat, lng } = e.latlng;
+        latAtual = lat;
+        lngAtual = lng;
+
+        if (marker) map.removeLayer(marker);
+        marker = L.marker([lat, lng]).addTo(map);
+        inputLatLng.value = `POINT(${lng} ${lat})`;
+
+        if(loader) loader.style.display = "inline-block";
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+            .then(res => res.json())
+            .then(data => {
+                const address = data.address || {};
+                document.getElementById("id_cidade").value = address.city || address.town || address.village || '';
+                document.getElementById("id_estado").value = address.state || '';
+                document.getElementById("id_endereco").value = address.road || address.neighbourhood || address.suburb || '';
+                document.getElementById("id_bairro").value = address.suburb || address.neighbourhood || '';
+                document.getElementById("id_numero").value = address.house_number || '';
+            })
+            .catch(err => console.error("Erro ao obter dados da localização:", err))
+            .finally(() => {
+                if(loader) loader.style.display = "none";
+            });
+    });
+
+    // Botão para abrir Google Maps na localização marcada
+    const btnDirecionar = document.getElementById("btn-direcionar");
+    if (btnDirecionar) {
+        btnDirecionar.addEventListener("click", () => {
+            if (latAtual && lngAtual) {
+                window.open(`https://www.google.com/maps/search/?api=1&query=${latAtual},${lngAtual}`, '_blank');
+            } else {
+                alert("Marque uma localização no mapa primeiro.");
+            }
+        });
+    }
+
+    document.getElementById("form-ponto").addEventListener("submit", function(e) {
+        if (!inputLatLng.value) {
+            alert("Por favor, selecione uma localização no mapa.");
+            e.preventDefault();
+        }
+        document.getElementById("btn-submit").disabled = true;
+        document.getElementById("btn-submit").innerHTML = '<span class="spinner-border spinner-border-sm"></span> Salvando...';
+    });
+}
+
+// Foto preview
+document.addEventListener("DOMContentLoaded", function() {
+    const fileInput = document.getElementById('id_foto');
+    const photoPreview = document.getElementById('photo-preview');
+    if(fileInput && photoPreview) {
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoPreview.innerHTML = `<img src="${e.target.result}" alt="Prévia da foto">`;
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        });
+    }
+
+    // AUTOCOMPLETE NOME POPULAR + NOME CIENTÍFICO
+    let inputNome = document.getElementById('id_nome_popular');
+    let inputCientifico = document.getElementById('id_nome_cientifico');
+    if(inputNome) inputNome.setAttribute("autocomplete", "off");
+
+    inputNome && inputNome.addEventListener('input', function () {
+        const val = inputNome.value.trim();
+        if (val.length >= 2) {
+            fetch(`/api/autocomplete-nome/?term=${encodeURIComponent(val)}`)
+                .then(res => res.json())
+                .then(data => {
+                    let datalist = document.getElementById('datalist-nome-popular');
+                    datalist.innerHTML = '';
+                    data.forEach(item => {
+                        let opt = document.createElement('option');
+                        opt.value = item;
+                        datalist.appendChild(opt);
+                    });
+                    inputNome.setAttribute("list", "datalist-nome-popular");
+                });
+            fetch(`/api/nome-cientifico/?nome_popular=${encodeURIComponent(val)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.nome_cientifico && inputCientifico) {
+                        inputCientifico.value = data.nome_cientifico;
+                    }
+                });
+        }
+    });
+});
+</script>
+<style>
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+{% endblock %}

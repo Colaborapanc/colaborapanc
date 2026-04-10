@@ -1,0 +1,86 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}{{ grupo.nome }} - Comunidade{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-8 col-12 mb-2 mb-md-0">
+            <h2 class="fw-bold text-primary mb-0">
+                <i class="bi bi-people-fill"></i> {{ grupo.nome|default:"Comunidade" }}
+            </h2>
+            <p class="mb-1 text-muted">{{ grupo.descricao|linebreaksbr|default:"(Sem descrição informada)" }}</p>
+        </div>
+        <div class="col-md-4 col-12 text-end">
+            {% if usuario_pertence_grupo %}
+                <a href="{% url 'remover_do_grupo' grupo.id %}" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-box-arrow-left"></i> Sair do grupo
+                </a>
+            {% else %}
+                <a href="{% url 'entrar_no_grupo' grupo.id %}" class="btn btn-success btn-sm">
+                    <i class="bi bi-person-plus"></i> Participar
+                </a>
+            {% endif %}
+            {% if user.is_superuser or user == grupo.gestor %}
+                <a href="{% url 'editar_grupo' grupo.id %}" class="btn btn-outline-primary btn-sm ms-2">
+                    <i class="bi bi-pencil"></i> Editar grupo
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body py-3">
+            <h5 class="text-success mb-2"><i class="bi bi-person-lines-fill"></i> Membros do grupo</h5>
+            {% if membros %}
+                <div class="row g-2">
+                    {% for membro in membros %}
+                        <div class="col-auto">
+                            <span class="badge bg-light text-success border border-success px-3 py-2">
+                                <i class="bi bi-person"></i>
+                                {{ membro.get_full_name|default:membro.username }}
+                                {% if user.is_superuser or user == grupo.gestor %}
+                                    <a href="{% url 'remover_membro_grupo' grupo.id membro.id %}" class="ms-1 text-danger" title="Remover do grupo"><i class="bi bi-x"></i></a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning my-2">Nenhum membro nesta comunidade.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body py-3">
+            <h5 class="text-success mb-2"><i class="bi bi-geo-alt-fill"></i> Contribuições do grupo</h5>
+            {% if pontos %}
+                <div class="row g-3">
+                    {% for ponto in pontos %}
+                        <div class="col-md-6">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body">
+                                    <span class="badge bg-secondary mb-1">{{ ponto.get_tipo_local_display }}</span>
+                                    <h6 class="fw-bold text-success mb-1">
+                                        {{ ponto.planta.nome_popular|default:ponto.nome_popular_sugerido|default:"Sem identificação" }}
+                                    </h6>
+                                    <p class="mb-0 text-muted small">
+                                        {{ ponto.cidade|default:"" }}{% if ponto.estado %}, {{ ponto.estado }}{% endif %}
+                                    </p>
+                                    <a href="{% url 'detalhe_ponto' ponto.id %}" class="btn btn-outline-primary btn-sm mt-2">
+                                        <i class="bi bi-eye"></i> Ver detalhe
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">Nenhuma contribuição vinculada a este grupo/comunidade.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

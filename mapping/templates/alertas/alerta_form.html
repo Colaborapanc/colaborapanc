@@ -1,0 +1,89 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Criar Novo Alerta Climático{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width:700px;">
+  <div class="card shadow rounded-3">
+    <div class="card-body">
+      <h2 class="text-success mb-3 text-center">
+        <i class="bi bi-exclamation-triangle-fill"></i> Criar Novo Alerta Climático
+      </h2>
+      <p class="text-muted text-center mb-4" style="font-size:1.05em;">
+        Preencha o formulário para criar um novo alerta climático associado a um ponto já cadastrado no mapa.
+      </p>
+      <form method="post" autocomplete="off" novalidate>
+        {% csrf_token %}
+
+        <!-- Seleção do ponto -->
+        <div class="mb-3">
+          <label for="id_ponto" class="form-label fw-semibold">Ponto *</label>
+          <select name="ponto" id="id_ponto" class="form-select" required>
+            <option value="" disabled selected>Selecione o ponto</option>
+            {% for ponto in pontos %}
+              <option value="{{ ponto.id }}">
+                {# Exibe o nome popular do ponto, se não houver, tenta nome da planta #}
+                {% if ponto.nome_popular and ponto.nome_popular != '' %}
+                  {{ ponto.nome_popular }}
+                {% elif ponto.planta.nome_popular and ponto.planta.nome_popular != '' %}
+                  {{ ponto.planta.nome_popular }}
+                {% else %}
+                  (sem nome)
+                {% endif %}
+                {# Exibe cidade e estado, se disponíveis #}
+                {% if ponto.cidade or ponto.estado %} - {% endif %}
+                {{ ponto.cidade|default:"(sem cidade)" }}
+                {% if ponto.estado %} ({{ ponto.estado }}){% endif %}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Tipo de alerta -->
+        <div class="mb-3">
+          <label for="id_tipo" class="form-label fw-semibold">Tipo de Alerta *</label>
+          <select name="tipo" id="id_tipo" class="form-select" required>
+            <option value="" disabled selected>Selecione o tipo</option>
+            <option value="Queimada">🔥 Queimada</option>
+            <option value="Enchente">🌊 Enchente</option>
+            <option value="Chuva Intensa">🌧️ Chuva Intensa</option>
+            <option value="Onda de Calor">🌡️ Onda de Calor</option>
+            <option value="Frio Extremo">❄️ Frio Extremo</option>
+            <option value="Risco de Deslizamento">🏔️ Risco de Deslizamento</option>
+          </select>
+        </div>
+
+        <!-- Datas de início e fim -->
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="id_inicio" class="form-label fw-semibold">Início *</label>
+            <input type="datetime-local" name="inicio" id="id_inicio" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label for="id_fim" class="form-label fw-semibold">Fim *</label>
+            <input type="datetime-local" name="fim" id="id_fim" class="form-control" required>
+          </div>
+        </div>
+
+        <!-- Descrição -->
+        <div class="mt-3">
+          <label for="id_descricao" class="form-label fw-semibold">Descrição (opcional)</label>
+          <textarea name="descricao" id="id_descricao" class="form-control" rows="3"
+            placeholder="Ex: Observações, recomendações, detalhes do alerta..."></textarea>
+        </div>
+
+        <!-- Botões -->
+        <div class="mt-4 d-flex justify-content-between">
+          <a href="{% url 'mapa' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Cancelar
+          </a>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-check-circle"></i> Salvar Alerta
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

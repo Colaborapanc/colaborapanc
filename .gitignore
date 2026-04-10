@@ -1,0 +1,124 @@
+# ==================================================
+# COLABORAPANC - Git Ignore
+# ==================================================
+
+# --------------------------------------------------
+# Python
+# --------------------------------------------------
+*.py[cod]
+*$py.class
+*.so
+.Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# --------------------------------------------------
+# Django
+# --------------------------------------------------
+*.log
+db.sqlite3
+db.sqlite3-journal
+/staticfiles/
+/media/
+*.pot
+local_settings.py
+
+# Migrations (descomentar se não quiser versionar)
+# */migrations/*.py
+# !*/migrations/__init__.py
+
+# --------------------------------------------------
+# IDE / Editors
+# --------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# --------------------------------------------------
+# Node / React Native / Expo
+# --------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# --------------------------------------------------
+# Logs
+# --------------------------------------------------
+logs/
+*.log
+log_*.txt
+nohup.out
+output.log
+
+# --------------------------------------------------
+# Backups e Temporários
+# --------------------------------------------------
+*.bak
+*.backup
+*.save
+*.save.*
+*_backup.*
+*.tmp
+*.temp
+
+# --------------------------------------------------
+# Certificados SSL (NUNCA commitar)
+# --------------------------------------------------
+*.pem
+*.crt
+*.key
+*.cer
+*.p12
+*.pfx
+
+# --------------------------------------------------
+# Arquivos do Sistema
+# --------------------------------------------------
+Thumbs.db
+.DS_Store
+*.swp
+*~
+
+# --------------------------------------------------
+# Build / Compilation
+# --------------------------------------------------
+build/
+dist/
+*.egg-info/
+.cache/
+
+# --------------------------------------------------
+# Outros
+# --------------------------------------------------
+*.tgz
+*.tar.gz
+*.zip
+estrutura*.txt

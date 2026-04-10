@@ -1,0 +1,29 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Excluir Alerta{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="text-danger mb-3">
+        <i class="bi bi-trash-fill"></i> Confirmar Exclusão do Alerta
+    </h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p>Você tem certeza que deseja excluir permanentemente este alerta?</p>
+            <ul>
+                <li><strong>Tipo:</strong> {{ alerta.tipo }}</li>
+                <li><strong>Ponto:</strong> {{ alerta.ponto.nome_popular }}</li>
+                <li><strong>Período:</strong> {{ alerta.inicio|date:"d/m/Y H:i" }} até {{ alerta.fim|date:"d/m/Y H:i" }}</li>
+            </ul>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Excluir
+                </button>
+                <a href="{% url 'mapa_colaborativo' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

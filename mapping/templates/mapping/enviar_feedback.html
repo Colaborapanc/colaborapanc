@@ -1,0 +1,79 @@
+{% extends "mapping/base.html" %}
+{% block title %}Feedback e Sugestões{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Envio de feedback -->
+        <div class="col-lg-6 col-12 mb-4">
+            <h2 class="fw-bold text-primary mb-1">
+                <i class="bi bi-chat-dots"></i> Envie seu Feedback
+            </h2>
+            <p class="text-muted mb-4">Sua opinião é muito importante para melhorarmos a plataforma.<br>Sugestões, críticas e relatos de problemas são sempre bem-vindos!</p>
+
+            <form method="post" class="card shadow-sm p-4 border-0 mb-3" id="form-feedback">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_mensagem" class="form-label fw-semibold">Mensagem</label>
+                    <textarea id="id_mensagem" name="mensagem" rows="4" class="form-control" placeholder="Conte aqui sua sugestão, dúvida ou relato..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="btn-enviar-feedback">
+                    <i class="bi bi-send"></i> Enviar Feedback
+                </button>
+            </form>
+
+            {% if mensagem_sucesso %}
+                <div class="alert alert-success mt-3" id="feedback-sucesso">
+                    <i class="bi bi-check2-circle"></i> {{ mensagem_sucesso }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Histórico de feedbacks -->
+        <div class="col-lg-6 col-12">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-3">
+                        <i class="bi bi-lightbulb"></i> Histórico de Feedbacks
+                    </h5>
+                    {% if historico_feedbacks %}
+                        <div style="max-height: 520px; overflow-y: auto;">
+                            <ul class="list-group list-group-flush">
+                                {% for feedback in historico_feedbacks %}
+                                    <li class="list-group-item pb-2">
+                                        <div class="fw-semibold">
+                                            <i class="bi bi-person-circle text-secondary"></i>
+                                            {{ feedback.usuario.username|default:"Anônimo" }}
+                                            <span class="text-muted small ms-2">{{ feedback.criado_em|date:"d/m/Y H:i" }}</span>
+                                        </div>
+                                        <div class="mt-1">{{ feedback.mensagem|linebreaksbr }}</div>
+                                        {% if feedback.ponto %}
+                                            <span class="badge bg-success mt-1">Relacionado ao ponto: {{ feedback.ponto }}</span>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-light text-muted mb-0">
+                            Nenhum feedback registrado ainda.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+document.getElementById('form-feedback')?.addEventListener('submit', function() {
+    var btn = document.getElementById('btn-enviar-feedback');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Enviando...';
+});
+</script>
+{% endblock %}
+

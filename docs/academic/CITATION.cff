@@ -1,0 +1,56 @@
+cff-version: 1.2.0
+message: "If you use ColaboraPANC in your research, please cite it using the metadata below."
+type: software
+title: "ColaboraPANC: AI-Assisted Geo-Referenced Mapping and Human-in-the-Loop Validation of Non-Conventional Food Plants"
+version: "1.0.0"
+date-released: "2026-01-22"
+license: MIT
+repository-code: "https://github.com/warleynutricionista-jpg/colaborapanc"
+abstract: >
+  ColaboraPANC is an open-source collaborative platform for geo-referenced
+  registration and validation of Non-Conventional Food Plants (PANCs — Plantas
+  Alimentícias Não Convencionais) in Brazil. It integrates AI-assisted botanical
+  identification (PlantNet, Plant.id), human-in-the-loop expert validation,
+  multi-source taxonomic enrichment (GBIF, iNaturalist, Tropicos, Global Names,
+  Trefle, Wikipedia), environmental monitoring (MapBiomas, NASA FIRMS, INMET),
+  and explainable territorial prioritisation scoring. The platform is built on
+  Django 4.2 + PostGIS (backend), Django REST Framework (API), and React
+  Native/Expo (mobile). It provides a fully auditable scientific workflow from
+  citizen data collection to expert-validated biodiversity records.
+keywords:
+  - non-conventional food plants
+  - PANC
+  - citizen science
+  - biodiversity
+  - geospatial
+  - AI-assisted identification
+  - human-in-the-loop
+  - food security
+  - Brazil
+  - Django
+  - PostGIS
+  - React Native
+authors:
+  - name: "ColaboraPANC Contributors"
+    # TODO: Replace with real authors. Format:
+    # - given-names: "Firstname"
+    #   family-names: "Lastname"
+    #   orcid: "https://orcid.org/0000-0000-0000-0000"
+    #   affiliation: "Institution Name"
+contact:
+  - name: "ColaboraPANC Maintainers"
+    # TODO: Add real contact email
+references:
+  - type: software
+    title: "Django"
+    version: "4.2"
+    url: "https://www.djangoproject.com/"
+  - type: software
+    title: "PostGIS"
+    url: "https://postgis.net/"
+  - type: software
+    title: "React Native"
+    url: "https://reactnative.dev/"
+  - type: software
+    title: "Expo"
+    url: "https://expo.dev/"
