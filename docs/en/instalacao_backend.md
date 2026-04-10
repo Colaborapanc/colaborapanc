@@ -20,13 +20,13 @@ Create PostgreSQL database and user and activate `postgis` in the target databas
 ## 3) Environment variables
 Minimal example:
 ```env
-DJANGO_SECRET_KEY=troque-esta-chave
+DJANGO_SECRET_KEY=replace-this-key
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
 
 POSTGRES_DB=pancdb
 POSTGRES_USER=pancuser
-POSTGRES_PASSWORD=senha
+POSTGRES_PASSWORD=password
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 

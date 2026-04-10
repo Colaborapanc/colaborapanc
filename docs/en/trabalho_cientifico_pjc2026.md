@@ -70,7 +70,8 @@ Finally, the study shows that final results in applied AI projects must be prese
 ## Keywords
 Assistive Artificial Intelligence; Common Good; PANC; Human Validation; Territorial Prioritization.
 
-## Bibliographic referencesBRAZIL. National Council for Scientific and Technological Development. **32nd Young Scientist Award 2026: Theme Artificial Intelligence for the Common Good**. Brasília: CNPq, 2026.
+## Bibliographic references
+BRAZIL. National Council for Scientific and Technological Development. **32nd Young Scientist Award 2026: Theme Artificial Intelligence for the Common Good**. Brasília: CNPq, 2026.
 
 DJANGO SOFTWARE FOUNDATION. **Django Documentation**. Available at: <https://docs.djangoproject.com/>. Accessed on: 10 April. 2026.
 

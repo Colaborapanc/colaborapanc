@@ -26,8 +26,8 @@ To use the MapBiomas API, you need to create a free account:
 3. Confirm your email
 4. Add your credentials in the `.env` file:
 ```bash
-MAPBIOMAS_EMAIL=seu-email@example.com
-MAPBIOMAS_PASSWORD=sua-senha-segura
+MAPBIOMAS_EMAIL=your-email@example.com
+MAPBIOMAS_PASSWORD=your-secure-password
 ```
 ### 2. Cache
 
@@ -54,8 +54,8 @@ Tests authentication with the MapBiomas API.
 **Successful Response:**
 ```json
 {
-  "status": "sucesso",
-  "mensagem": "Conexão com MapBiomas estabelecida com sucesso",
+  "status": "success",
+  "message": "Connection to MapBiomas established successfully",
   "autenticado": true
 }
 ```
@@ -63,8 +63,8 @@ Tests authentication with the MapBiomas API.
 **Error Response:**
 ```json
 {
-  "status": "erro",
-  "mensagem": "Não foi possível autenticar na API MapBiomas. Verifique as credenciais.",
+  "status": "error",
+  "message": "Could not authenticate with the MapBiomas API. Check credentials.",
   "autenticado": false
 }
 ```
@@ -92,7 +92,9 @@ Search for deforestation alerts in a specific region.
 **Request Example:**
 ```bash
 curl "http://localhost:8000/api/mapbiomas/alertas/?latitude=-15.7801&longitude=-47.9292&raio_km=20&limite=10"
-```**Successful Response:**
+```
+
+**Successful Response:**
 ```json
 {
   "collection": [
@@ -126,7 +128,9 @@ Searches for detailed information for a specific alert.
 **Request Example:**
 ```bash
 curl "http://localhost:8000/api/mapbiomas/alertas/123456/"
-```**Successful Response:**
+```
+
+**Successful Response:**
 ```json
 {
   "alertCode": 123456,
@@ -166,7 +170,9 @@ Search for available territories (biomes, municipalities, conservation units, et
 **Request Example:**
 ```bash
 curl "http://localhost:8000/api/mapbiomas/territorios/?categoria=BIOME"
-```**Successful Response:**
+```
+
+**Successful Response:**
 ```json
 [
   {
@@ -200,7 +206,9 @@ Searches for alerts associated with a specific rural property (CAR).
 **Request Example:**
 ```bash
 curl "http://localhost:8000/api/mapbiomas/propriedade/?car_code=DF-1234567890123456789012345678901234"
-```**Successful Response:**
+```
+
+**Successful Response:**
 ```json
 {
   "carCode": "DF-1234567890123456789012345678901234",
@@ -253,7 +261,9 @@ Check deforestation alerts near a specific PANC point registered in the system.
 ```bash
 curl -H "Authorization: Bearer <token>" \
   "http://localhost:8000/api/mapbiomas/pontos-panc/123/?raio_km=10"
-```**Successful Response:**
+```
+
+**Successful Response:**
 ```json
 {
   "ponto_id": 123,
@@ -349,7 +359,7 @@ const verificarAlertasPonto = async (pontoId: number, token: string) => {
     );
     return response.data;
   } catch (error) {
-    console.error('Erro ao verificar alertas do ponto:', error);
+    console.error('Error while checking alerts near the point:', error);
     return null;
   }
 };
@@ -457,8 +467,8 @@ The MapBiomas API does not specify explicit rate limits in the documentation, bu
 
 Check that the credentials in `.env` are correct:
 ```bash
-MAPBIOMAS_EMAIL=seu-email@example.com
-MAPBIOMAS_PASSWORD=sua-senha
+MAPBIOMAS_EMAIL=your-email@example.com
+MAPBIOMAS_PASSWORD=your-password
 ```
 ### Error 503: Service Unavailable
 

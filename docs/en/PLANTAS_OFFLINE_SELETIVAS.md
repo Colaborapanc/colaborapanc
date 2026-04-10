@@ -82,7 +82,9 @@ navigation.navigate('PlantasOffline');
 
 // Selecione plantas individuais ou escolha um pacote
 // Toque em "Baixar" para iniciar o download
-```#### 2. Configure Preferences
+```
+
+#### 2. Configure Preferences
 ```javascript
 // Acesse ConfiguracoesOfflineScreen
 navigation.navigate('ConfiguracoesOffline');
@@ -93,7 +95,9 @@ navigation.navigate('ConfiguracoesOffline');
 // - Incluir modelos AR
 // - Limite de armazenamento
 // - Frequência de atualização
-```#### 3. Identify Offline
+```
+
+#### 3. Identify Offline
 ```javascript
 // Use a função de identificação normalmente
 import identificacaoService from './services/identificacaoService';
@@ -132,7 +136,9 @@ planta = PlantaReferencial.objects.create(
     bioma="Mata Atlântica",
     regiao_ocorrencia="Sul, Sudeste",
 )
-```#### Create Plant Pack
+```
+
+#### Create Plant Pack
 ```python
 from mapping.models import PacotePlantasOffline, PlantaReferencial
 
@@ -148,7 +154,9 @@ pacote = PacotePlantasOffline.objects.create(
 # Adicionar plantas ao pacote
 plantas_cerrado = PlantaReferencial.objects.filter(bioma="Cerrado")
 pacote.plantas.set(plantas_cerrado)
-```#### Implement Feature Extraction
+```
+
+#### Implement Feature Extraction
 ```javascript
 // Melhorar a função extrairFeaturesImagem em identificacaoService.js
 // Usar bibliotecas como:
@@ -201,14 +209,18 @@ python manage.py migrate
 
 # Criar superusuário (se necessário)
 python manage.py createsuperuser
-```#### 2. Mobile
+```
+
+#### 2. Mobile
 ```bash
 # Instalar dependências
 npm install @react-native-async-storage/async-storage
 npm install @react-native-community/netinfo
 npm install @react-native-community/slider
 npm install axios
-```#### 3. Configure URLs
+```
+
+#### 3. Configure URLs
 
 Add to your main routes file:
 ```python
