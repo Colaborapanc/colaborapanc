@@ -1,12 +1,19 @@
 # Índice Legado da Documentação em Português
 
-Este arquivo foi mantido por compatibilidade com links antigos.
+Este arquivo é mantido para compatibilidade com links antigos.
 
-## Documentação canônica (atual)
+## Documentação canônica (ativa)
 
-- Acesse [`docs/pt-BR/index.md`](../pt-BR/index.md) para a árvore principal de documentação em português.
-- Equivalente em inglês: [`docs/en/index.md`](../en/index.md).
+- Árvore canônica PT-BR: [`docs/pt-BR/index.md`](../pt-BR/index.md)
+- Árvore canônica EN: [`docs/en/index.md`](../en/index.md)
 
-## Arquivos legados detalhados
+## Governança de consolidação legada
 
-Os arquivos deste diretório (`docs/pt/`) foram preservados para rastreabilidade histórica e podem conter contexto técnico profundo de ciclos anteriores de documentação.
+- Matriz de consolidação: [`docs/pt-BR/matriz-consolidacao-legado.md`](../pt-BR/matriz-consolidacao-legado.md)
+- Equivalente em inglês: [`docs/en/legacy-consolidation-matrix.md`](../en/legacy-consolidation-matrix.md)
+
+## Política de uso do legado
+
+- Arquivos legados permanecem para rastreabilidade histórica.
+- Atualizações funcionais devem ocorrer primeiro nas docs canônicas.
+- Apenas legados marcados como “anexo técnico ativo” na matriz devem receber evolução operacional.

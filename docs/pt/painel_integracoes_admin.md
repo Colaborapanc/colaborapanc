@@ -1,28 +1,34 @@
-# Painel administrativo de integrações
+# Painel Admin de Integrações (Anexo Técnico Legado)
+
+## Status
+
+**Reescrito e mantido como anexo técnico ativo.**
+Operação admin canônica: `docs/pt-BR/admin.md`.
 
 ## Objetivo
-Permitir que perfis administrativos acompanhem saúde operacional das integrações e executem testes rápidos sem acessar logs técnicos brutos.
 
-## Permissões
-- Acesso web: usuários autenticados `is_staff` ou `is_superuser`.
-- APIs:
+Oferecer guia focado de operação do painel de saúde de integrações sem duplicar toda a governança administrativa.
+
+## Capacidades do painel
+
+- Status consolidado de integração (`online`, `degradada/parcial`, `offline`, `nao_configurada`).
+- Diagnósticos amigáveis (`error_type`, `mensagem_amigavel`) e nível de latência.
+- Ação para healthcheck completo ou reteste por integração.
+
+## Modelo de acesso
+
+- Painel web restrito a perfis administrativos.
+- Endpoints API:
   - `GET /api/admin/integracoes/health/`
   - `POST /api/admin/integracoes/testar/`
-  - Ambas restritas a `is_staff`/`is_superuser`.
 
-## O que a tela exibe
-- Status atual (`online`, `parcial`, `offline`, `nao_configurada`, `erro_autenticacao`, `timeout`).
-- Configuração/operacionalidade.
-- Última verificação, último sucesso e última falha.
-- Tipo resumido do problema (`error_type`).
-- Indicador de latência (`baixa`, `media`, `alta`, `nao_disponivel`).
-- Logs recentes simplificados por integração.
+## Uso operacional
 
-## Ações
-- **Testar todas**: executa healthcheck completo.
-- **Testar novamente** (por linha): executa teste apenas da integração escolhida.
+1. Identificar integração degradada/falhando.
+2. Verificar configuração/credenciais ausentes e categoria do erro.
+3. Reexecutar teste e observar transição.
+4. Escalonar por impacto de domínio (identificação, enriquecimento, clima/ambiental).
 
-## Diretrizes de UX
-- UI evita stack traces e mostra `mensagem_amigavel`.
-- Em execução, botões ficam desabilitados para evitar chamadas concorrentes.
-- Empty state explícito quando não há integrações monitoradas.
+## Nota de consolidação
+
+Contexto de governança/política permanece no admin canônico; este anexo segue como referência rápida de operação de UI.

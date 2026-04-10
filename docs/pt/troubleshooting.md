@@ -1,21 +1,38 @@
-# Troubleshooting
+# Troubleshooting (Anexo Técnico Legado)
 
-## Backend não inicia: `DJANGO_SECRET_KEY não definido`
-Defina `DJANGO_SECRET_KEY` no ambiente/.env.
+## Status
 
-## Erro de banco geoespacial
-Sintoma: falhas com engine GIS/migrações.
-- Verificar se o banco usa PostGIS.
-- Confirmar extensão `postgis` ativa.
+**Reescrito e mantido como anexo técnico ativo.**
 
-## Falha em inferência IA
-- Verificar `PLANTNET_API_KEY` / `PLANTID_API_KEY`.
-- Confirmar conectividade de rede para APIs externas.
-- Validar formato de imagem enviado.
+## Escopo
 
-## Mobile não conecta na API
-- Ajustar `EXPO_PUBLIC_API_URL`.
-- Em dispositivo físico, não usar `localhost` da máquina host.
+Troubleshooting operacional rápido para problemas comuns de setup/execução que não cabem integralmente nos resumos canônicos de usuário/admin.
 
-## Permissão negada em revisão científica
-- Usuário precisa ser superusuário ou membro do grupo `Revisor`.
+## Cenários comuns
+
+### 1) Mobile não sincroniza pendências offline
+- Verificar restauração de rede e URL base de API.
+- Confirmar backend acessível e sessão/token válidos.
+- Reexecutar sincronização e inspecionar estado da fila pendente no app.
+
+### 2) Integração aparece offline/degradada
+- Usar painel admin de integrações e endpoint de reteste.
+- Verificar primeiro variáveis de ambiente/credenciais ausentes.
+- Separar falha de auth/config de indisponibilidade/timeout de provedor.
+
+### 3) Resultado de IA parece inconsistente
+- Tratar saída como assistiva; verificar status de revisão.
+- Confirmar se validação humana ainda está pendente.
+- Revisar contexto de confiança antes de agir sobre resultado.
+
+### 4) Divergência entre ambiente e deploy
+- Revisar guias canônicos de instalação/implantação.
+- Validar variáveis de ambiente e segredos.
+- Confirmar configuração segura em produção (`DEBUG=False`, CORS restritivo em produção).
+
+## Referências canônicas
+
+- Fluxo de usuário: `docs/pt-BR/guia-do-usuario.md`
+- Fluxo de contribuição: `docs/pt-BR/contribuicao.md`
+- Operação administrativa: `docs/pt-BR/admin.md`
+- Instalação/implantação: `docs/pt-BR/instalacao.md`, `docs/pt-BR/implantacao.md`

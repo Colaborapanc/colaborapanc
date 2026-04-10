@@ -1,12 +1,19 @@
 # Legacy English Documentation Index
 
-This file is kept for backward compatibility.
+This file is preserved for backward compatibility with older links.
 
-## Canonical documentation (current)
+## Canonical documentation (active)
 
-- Go to [`docs/en/index.md`](./index.md) for the maintained English documentation tree.
-- Portuguese equivalent: [`docs/pt-BR/index.md`](../pt-BR/index.md).
+- English canonical tree: [`docs/en/index.md`](./index.md)
+- PT-BR canonical tree: [`docs/pt-BR/index.md`](../pt-BR/index.md)
 
-## Legacy detailed files
+## Legacy consolidation governance
 
-The files in this folder with legacy naming (e.g. `arquitetura_geral.md`) are retained for historical traceability and may contain deeper technical context from previous documentation rounds.
+- Consolidation matrix: [`docs/en/legacy-consolidation-matrix.md`](./legacy-consolidation-matrix.md)
+- PT-BR matrix equivalent: [`docs/pt-BR/matriz-consolidacao-legado.md`](../pt-BR/matriz-consolidacao-legado.md)
+
+## Legacy usage policy
+
+- Legacy files are kept for historical traceability.
+- Functional updates must happen in canonical docs first.
+- Only legacy files explicitly marked as “active technical annex” in the matrix should receive operational updates.
