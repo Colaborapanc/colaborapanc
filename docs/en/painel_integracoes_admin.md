@@ -1,28 +1,34 @@
-# Integrations administrative panel
+# Integrations Admin Panel (Legacy Technical Annex)
 
-## Objective
-Allow administrative profiles to track operational health of integrations and run quick tests without accessing raw technical logs.
+## Status
 
-## Permissions
-- Web access: authenticated users `is_staff` or `is_superuser`.
-- APIs:
+**Rewritten and maintained as active technical annex.**
+Canonical admin operation: `docs/en/admin.md`.
+
+## Purpose
+
+Provide focused operator guidance for integration-health panel behavior without duplicating full admin governance docs.
+
+## Panel capabilities
+
+- Consolidated integration status (`online`, `degradada/parcial`, `offline`, `nao_configurada`).
+- Friendly diagnostics (`error_type`, `mensagem_amigavel`) and response latency levels.
+- Trigger full healthcheck or per-integration retest actions.
+
+## Access model
+
+- Web panel restricted to administrative profiles.
+- API endpoints:
   - `GET /api/admin/integracoes/health/`
   - `POST /api/admin/integracoes/testar/`
-  - Both restricted to `is_staff`/`is_superuser`.
 
-## What the screen displays
-- Current status (`online`, `parcial`, `offline`, `nao_configurada`, `erro_autenticacao`, `timeout`).
-- Configuration/operationality.
-- Last check, last success and last failure.
-- Summary type of the problem (`error_type`).
-- Latency indicator (`baixa`, `media`, `alta`, `nao_disponivel`).
-- Recent logs simplified by integration.
+## Operational usage
 
-## Actions
-- **Test all**: runs complete healthcheck.
-- **Test again** (per line): runs test only for the chosen integration.
+1. Identify failing/degraded integration.
+2. Check missing configuration/credentials and error category.
+3. Re-test and observe transition.
+4. Escalate by domain impact (identification, enrichment, climate/environment).
 
-## UX Guidelines
-- UI avoids stack traces and shows `mensagem_amigavel`.
-- During execution, buttons are disabled to avoid competing calls.
-- Explicit Empty state when there are no monitored integrations.
+## Consolidation note
+
+Governance/policy context stays in canonical admin docs; this annex stays as UI-operation quick reference.

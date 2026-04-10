@@ -46,3 +46,4 @@ Este conjunto canônico reflete comportamento ativo do sistema implementado no r
 - README raiz do projeto (EN): [`README.md`](../../README.md)
 - Índice legado em português: [`docs/pt/README.md`](../pt/README.md)
 - Índice legado em inglês: [`docs/en/README.md`](../en/README.md)
+- Matriz de consolidação de legado: [`matriz-consolidacao-legado.md`](./matriz-consolidacao-legado.md)

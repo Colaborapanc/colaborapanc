@@ -46,3 +46,4 @@ This canonical set reflects active system behavior implemented in the repository
 - Root project README (PT-BR): [`README.pt-BR.md`](../../README.pt-BR.md)
 - Legacy Portuguese index: [`docs/pt/README.md`](../pt/README.md)
 - Legacy English index: [`docs/en/README.md`](./README.md)
+- Legacy consolidation matrix: [`legacy-consolidation-matrix.md`](./legacy-consolidation-matrix.md)
