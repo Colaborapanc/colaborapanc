@@ -1,17 +1,24 @@
-# Deploy (EN)
+# Deploy
 
-> This is the English companion document for `docs/pt/deploy.md`.
->
-> Last reviewed: 2026-04-10
+## Minimum requirements
+- PostgreSQL/PostGIS available and accessible.
+- Configured production environment variables.
+- Python and geospatial dependencies installed.
+- Static file and media strategy (`collectstatic`, storage).
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+## Base step by step (backend)
+1. Provision Linux environment with Python and GDAL.
+2. Configure PostGIS database.
+3. Define production `.env` (`DEBUG=False`).
+4. Install dependencies and run migrations.
+5. Run `collectstatic`.
+6. Upload application with WSGI (`config/wsgi.py`) via Gunicorn/uWSGI and reverse proxy.
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/deploy.md`](../pt/deploy.md)
+## Mobile
+- Build Expo according to the (preview/prod) environment, with `EXPO_PUBLIC_API_URL` pointing to the public backend.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
-
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Care
+- Review CORS/CSRF with official hosts.
+- Mandatory TLS certificates.
+- Backup policy for banking and media.
+- Rotation of secrets and API keys.

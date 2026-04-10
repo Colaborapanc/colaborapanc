@@ -1,17 +1,26 @@
-# Métricas e validação (EN)
+# Metrics and validation
 
-> This is the English companion document for `docs/pt/metricas_e_validacao.md`.
->
-> Last reviewed: 2026-04-10
+## Source endpoint
+`GET /api/cientifico/dashboard/`
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+## Metrics available today
+- Total points submitted.
+- Total points with image.
+- Total inferences.
+- Validation and rejection rate.
+- Agreement and divergence AI vs expert (top-1).
+- Average time until validation (hours).
+- Geographic distribution by state.
+- Top suggested species.
+- Distribution by trust (`alta`, `media`, `baixa`).
+- Sample of territorial prioritization.
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/metricas_e_validacao.md`](../pt/metricas_e_validacao.md)
+## How to interpret
+- **High agreement** does not replace human review; it only indicates AI-expert proximity in the validated set.
+- **High average time** indicates a review bottleneck.
+- **Confidence distribution** helps monitor operational quality of inference.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
-
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Planned metrics (not implemented in current code)
+- Precision, recall, F1 by species and by biome.
+- Curves by provider and time window.
+- Consolidated confusion matrix.

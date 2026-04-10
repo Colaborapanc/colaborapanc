@@ -1,17 +1,23 @@
-# Governança de IA (EN)
+# AI Governance
 
-> This is the English companion document for `docs/pt/governanca_ia.md`.
->
-> Last reviewed: 2026-04-10
+## Principles adopted
+1. Assistive, not autonomous AI.
+2. Mandatory human review by authorized role.
+3. Auditable record of decisions and disagreements.
+4. Transparency about uncertainty and limits of external providers.
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+## Technical controls present
+- Revision access control: `IsReviewerOrAdmin`.
+- Persistence of prediction and validation in separate models.
+- Event history (`HistoricoValidacao`).
+- Confidence rating and operational recommendation.
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/governanca_ia.md`](../pt/governanca_ia.md)
+## Known risks
+- Bias and uneven coverage of external APIs by region/species.
+- False positives in low quality images.
+- Dependence on third party availability/quotas.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
-
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Recommended mitigations
+- Continuous training of reviewers.
+- Divergence monitoring panels by provider.
+- Collection context record (image quality, plant organ).

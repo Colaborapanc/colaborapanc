@@ -1,17 +1,26 @@
-# Priorização territorial (EN)
+# Territorial prioritization
 
-> This is the English companion document for `docs/pt/priorizacao_territorial.md`.
->
-> Last reviewed: 2026-04-10
+## Current implementation
+Service: `mapping/services/priorizacao_territorial.py`.
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+Main function: `calcular_score_prioridade(ponto, clima_snapshot=None, densidade_validacoes=0)`.
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/priorizacao_territorial.md`](../pt/priorizacao_territorial.md)
+## Formula implemented
+`score_final = 0.30*incidencia + 0.25*clima + 0.25*confiabilidade + 0.20*recencia`
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
+Components:
+- **incidence**: local density of validations (simple proxy).
+- **climate**: climate risk received in the snapshot (default 0.3).
+- **reliability**: favors points already approved/validated.
+- **recency**: recent observations are given greater weight.
 
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Output
+Object with:
+- `score` (0 to 1),
+- `componentes` (details for audit),
+- `explicacao` textual.
+
+## Limitations
+- Heuristics not yet calibrated with extensive historical series.
+- Dependence on external climate snapshot when available.
+- Current usage in sample dashboard (not full batch pipeline).

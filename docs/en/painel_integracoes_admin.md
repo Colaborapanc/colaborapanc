@@ -1,17 +1,28 @@
-# Painel administrativo de integrações (EN)
+# Integrations administrative panel
 
-> This is the English companion document for `docs/pt/painel_integracoes_admin.md`.
->
-> Last reviewed: 2026-04-10
+## Objective
+Allow administrative profiles to track operational health of integrations and run quick tests without accessing raw technical logs.
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+## Permissions
+- Web access: authenticated users `is_staff` or `is_superuser`.
+- APIs:
+  - `GET /api/admin/integracoes/health/`
+  - `POST /api/admin/integracoes/testar/`
+  - Both restricted to `is_staff`/`is_superuser`.
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/painel_integracoes_admin.md`](../pt/painel_integracoes_admin.md)
+## What the screen displays
+- Current status (`online`, `parcial`, `offline`, `nao_configurada`, `erro_autenticacao`, `timeout`).
+- Configuration/operationality.
+- Last check, last success and last failure.
+- Summary type of the problem (`error_type`).
+- Latency indicator (`baixa`, `media`, `alta`, `nao_disponivel`).
+- Recent logs simplified by integration.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
+## Actions
+- **Test all**: runs complete healthcheck.
+- **Test again** (per line): runs test only for the chosen integration.
 
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## UX Guidelines
+- UI avoids stack traces and shows `mensagem_amigavel`.
+- During execution, buttons are disabled to avoid competing calls.
+- Explicit Empty state when there are no monitored integrations.

@@ -1,17 +1,29 @@
-# Configuração de ambiente (EN)
+# Environment configuration
 
-> This is the English companion document for `docs/pt/configuracao_ambiente.md`.
->
-> Last reviewed: 2026-04-10
+## Backend (`config/settings.py`)
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+| Variable | Mandatory | Usage |
+|---|---:|---|
+| `DJANGO_SECRET_KEY` | Yes | Django Secret Key |
+| `DJANGO_DEBUG` | No | Debug mode |
+| `DJANGO_ALLOWED_HOSTS` | Yes (prod) | Allowed Hosts |
+| `POSTGRES_DB` | Yes | Bank name |
+| `POSTGRES_USER` | Yes | Bank user |
+| `POSTGRES_PASSWORD` | Yes | Bank password |
+| `POSTGRES_HOST` | Yes | Bank Host |
+| `POSTGRES_PORT` | No | Bank door |
+| `PLANTNET_API_KEY` | Optional* | PlantNet Inference |
+| `PLANTID_API_KEY` | Optional* | Plant.id Inference |
+| `CORS_ALLOWED_ORIGINS` | Recommended in prod | CORS Whitelist |
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/configuracao_ambiente.md`](../pt/configuracao_ambiente.md)
+\* Without AI keys, inference functionalities are limited.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
+## Mobile
+| Variable | Usage |
+|---|---|
+| `EXPO_PUBLIC_API_URL` | API base URL used by mobile services |
 
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Good practices
+- Never commit `.env` with real secret.
+- Use different values ​​for `dev`, `test` and `prod`.
+- In production, `DEBUG=False`, explicit hosts/origins and secure cookies enabled.

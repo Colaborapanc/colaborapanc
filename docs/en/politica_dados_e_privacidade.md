@@ -1,17 +1,22 @@
-# Política de dados e privacidade (base técnica) (EN)
+# Data and privacy policy (technical basis)
 
-> This is the English companion document for `docs/pt/politica_dados_e_privacidade.md`.
->
-> Last reviewed: 2026-04-10
+## Data processed
+- User registration (conta/autenticação).
+- Point observation data (location, report, photo).
+- Scientific inference and validation metadata.
+- Interaction data (messages, notifications, gamification).
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+## Sensitive data in context
+- Geolocation can reveal environmentally sensitive areas.
+- Images can contain metadata and contextual information.
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/politica_dados_e_privacidade.md`](../pt/politica_dados_e_privacidade.md)
+## Applicable LGPD Guidelines
+- Purpose: PANC mapping and validation.
+- Necessity: collect minimum necessary for operation.
+- Transparency: inform that AI is assistive and subject to error.
+- Security: secrets outside the code, access control by role.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
-
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Retention and minimization
+- Maintain scientific history for auditability.
+- Evaluate retention policy by type of data (account, image, log).
+- Apply anonymization/reduced geoprecision in sensitive public contexts (pending full operational policy).

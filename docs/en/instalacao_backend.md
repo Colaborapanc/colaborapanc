@@ -1,17 +1,57 @@
-# Instalação do backend (EN)
+# Backend installation
 
-> This is the English companion document for `docs/pt/instalacao_backend.md`.
->
-> Last reviewed: 2026-04-10
+## Requirements
+- Python 3.11+
+- PostgreSQL + PostGIS
+- GDAL (headers and binaries)
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+## 1) Python Environment
+```bash
+python3 -m venv venv
+source venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements_core.txt
+```
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/instalacao_backend.md`](../pt/instalacao_backend.md)
+> In environments that use the full set of dependencies, replace this with `requirements.txt`.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
+## 2) Database
+Create a PostgreSQL database and user and activate `postgis` on the target database.
 
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## 3) Environment variables
+Minimal example:
+```env
+DJANGO_SECRET_KEY=troque-esta-chave
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+
+POSTGRES_DB=pancdb
+POSTGRES_USER=pancuser
+POSTGRES_PASSWORD=senha
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+
+PLANTNET_API_KEY=
+PLANTID_API_KEY=
+```
+
+## 4) Migrations and admin user
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+## 5) Local execution
+```bash
+python manage.py runserver 0.0.0.0:8000
+```
+
+##6) Quick Check
+```bash
+python manage.py check
+curl http://127.0.0.1:8000/healthz/
+```
+
+## Notes
+- Without `DJANGO_SECRET_KEY`, the backend does not start.
+- The bank's engine is PostGIS; bank without geospatial extension breaks GIS migrations/queries.

@@ -1,17 +1,23 @@
-# Testes (EN)
+# Tests
 
-> This is the English companion document for `docs/pt/testes.md`.
->
-> Last reviewed: 2026-04-10
+## Current set in repository
+- `tests/test_scientific_core.py`
+- `tests/test_permissions.py`
+- `tests/test_ia_identificacao_providers.py`
+- `tests/test_plant_identification.py`
 
-## Scope
-This file is part of the bilingual documentation structure of ColaboraPANC and is linked from the English documentation index.
+## Execução
+```bash
+pytest
+```
 
-## Canonical counterpart
-- Portuguese canonical version: [`docs/pt/testes.md`](../pt/testes.md)
+## Current focus
+- Confidence range rules.
+- Calculation of territorial score.
+- Revision permission (`IsReviewerOrAdmin`).
+- Normalization of the AI ​​provider pipeline.
 
-## Translation status
-This English file is synchronized structurally with the Portuguese source and should be expanded whenever the Portuguese source receives substantial updates.
-
-## Quick summary
-Please refer to the Portuguese canonical document for complete technical details while this English companion is being progressively expanded.
+## Gaps
+- Limited coverage of DRF endpoints with real banking.
+- Few integration tests between scientific flow and point status update.
+- Lack of formal coverage strategy in the CI/CD pipeline of this repository.
