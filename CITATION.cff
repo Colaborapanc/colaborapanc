@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use ColaboraPANC in your research, please cite it using the metadata below."
+type: software
+title: "ColaboraPANC"
+version: "1.0.0"
+license: MIT
+repository-code: "https://github.com/warleynutricionista-jpg/colaborapanc"
+url: "https://github.com/warleynutricionista-jpg/colaborapanc"
+abstract: >
+  Open-source collaborative platform for geo-referenced mapping and scientific
+  validation of Non-Conventional Food Plants (PANC), combining collaborative
+  collection, AI-assisted support, human-in-the-loop review, and environmental
+  context integrations.
+keywords:
+  - PANC
+  - non-conventional food plants
+  - biodiversity
+  - citizen science
+  - geospatial
+  - django
+  - react native
+authors:
+  - name: "[TO_FILL_BY_AUTHORS]"
+contact:
+  - name: "[TO_FILL_BY_AUTHORS]"
+    email: "[TO_FILL_BY_AUTHORS]"
+references:
+  - type: software
+    title: "Django"
+    url: "https://www.djangoproject.com/"
+  - type: software
+    title: "PostGIS"
+    url: "https://postgis.net/"
+  - type: software
+    title: "React Native"
+    url: "https://reactnative.dev/"

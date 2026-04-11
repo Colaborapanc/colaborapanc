@@ -1,0 +1,37 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ColaboraPANC",
+  "description": "Open-source collaborative platform for AI-assisted geo-referenced mapping, human-in-the-loop validation, and territorial/environmental support for Non-Conventional Food Plants (PANC).",
+  "version": "1.0.0",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "url": "https://github.com/warleynutricionista-jpg/colaborapanc",
+  "codeRepository": "https://github.com/warleynutricionista-jpg/colaborapanc",
+  "issueTracker": "https://github.com/warleynutricionista-jpg/colaborapanc/issues",
+  "programmingLanguage": [
+    { "@type": "ComputerLanguage", "name": "Python" },
+    { "@type": "ComputerLanguage", "name": "JavaScript" }
+  ],
+  "runtimePlatform": [
+    "Django",
+    "PostgreSQL with PostGIS",
+    "React Native / Expo"
+  ],
+  "operatingSystem": ["Linux", "macOS", "Windows"],
+  "author": [
+    { "@type": "Organization", "name": "[TO_FILL_BY_AUTHORS]" }
+  ],
+  "maintainer": [
+    { "@type": "Organization", "name": "[TO_FILL_BY_AUTHORS]" }
+  ],
+  "referencePublication": {
+    "@type": "ScholarlyArticle",
+    "name": "[TO_FILL_BY_AUTHORS]",
+    "description": "Draft manuscript available locally and pending transfer to official SoftwareX template"
+  },
+  "relatedLink": [
+    "https://github.com/warleynutricionista-jpg/colaborapanc/blob/main/README.md",
+    "https://github.com/warleynutricionista-jpg/colaborapanc/blob/main/docs/en/index.md",
+    "https://github.com/warleynutricionista-jpg/colaborapanc/blob/main/docs/academic/paper.md"
+  ]
+}

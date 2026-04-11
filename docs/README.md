@@ -2,41 +2,31 @@
 
 Choose your language / Escolha seu idioma:
 
-- 🇺🇸 **English:** [`docs/en/index.md`](./en/index.md)
-- 🇧🇷 **Português (Brasil):** [`docs/pt-BR/index.md`](./pt-BR/index.md)
+- 🇺🇸 **English (canonical):** [`docs/en/index.md`](./en/index.md)
+- 🇧🇷 **Português (Brasil, canônico):** [`docs/pt-BR/index.md`](./pt-BR/index.md)
 
-## Purpose of this hub
+## Purpose
 
-This file is the documentation entry layer. It centralizes language selection and points to the canonical documentation trees that describe the current codebase behavior.
+This hub is the single entry point for documentation navigation and language selection.
 
-## Canonical documentation sets
+## Canonical policy
 
-- `docs/en/`: canonical English documentation for the current product state.
-- `docs/pt-BR/`: canonical Brazilian Portuguese documentation for the current product state.
+- For international technical/editorial review, prefer **English canonical docs** in `docs/en/`.
+- Portuguese canonical docs in `docs/pt-BR/` should remain semantically aligned with the English set.
 
-Both canonical sets should keep equivalent scope and depth.
+## Additional trees
 
-## Legacy and supporting documentation
+- `docs/pt/`: legacy Portuguese files preserved for traceability.
+- `docs/academic/`: manuscript and metadata source artifacts.
 
-- `docs/pt/`: legacy Portuguese documentation preserved for technical traceability and controlled migration into canonical docs.
-- `docs/en/README.md`: backward-compatible legacy index for older English links.
-- `docs/academic/`: paper and citation artifacts for academic dissemination.
+## Key entry points
 
-## Coverage expected from canonical docs
+- Root README (EN): [`../README.md`](../README.md)
+- Root README (PT-BR): [`../README.pt-BR.md`](../README.pt-BR.md)
+- English index: [`./en/index.md`](./en/index.md)
+- PT-BR index: [`./pt-BR/index.md`](./pt-BR/index.md)
 
-The canonical indexes should route to documentation that covers:
 
-- Backend platform architecture and operation (Django + DRF).
-- API surface and endpoint families.
-- Scientific workflow (AI inference, review, validation, audit trail).
-- Environmental and territorial integrations (MapBiomas, climate pipeline).
-- Mobile app architecture and backend parity flows.
-- Auxiliary collaboration modules (notifications, conversations, gamification, routes, preferences).
-- Installation, deployment, administration, contribution process, roadmap, and FAQ.
+## Submission package
 
-## Source-of-truth policy
-
-When documentation conflicts exist:
-1. Code is the source of truth.
-2. Canonical docs (`docs/en`, `docs/pt-BR`) must be updated first.
-3. Legacy docs are either migrated into canonical annexes or archived as historical records.
+- Local SoftwareX package drafts: [`../submission/softwarex/README.md`](../submission/softwarex/README.md)

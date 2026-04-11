@@ -1,64 +1,71 @@
 # ColaboraPANC
 
-> **Language selector:** [English](./README.md) | [Português (Brasil)](./README.pt-BR.md)
+> Language selector: [English](./README.md) | [Português (Brasil)](./README.pt-BR.md)
 
-ColaboraPANC is an open-source collaborative platform for georeferenced mapping of Non-Conventional Food Plants (PANC), combining collaborative contribution, AI-assisted scientific workflows, environmental monitoring, and mobile/web parity.
+ColaboraPANC is an open-source platform for geo-referenced mapping and scientific validation of Non-Conventional Food Plants (PANC), combining collaborative data collection, AI-assisted identification, human expert review, and environmental context integrations.
 
-## What the system currently includes
+## Overview
 
-### 1) Backend platform (Django + DRF)
-- Web flows for map visualization, contribution, curation, moderation, and administrative panels.
-- REST API endpoints for points, collaboration resources, routes, notifications, and user preferences.
-- Authentication and account flows via token login, registration, and django-allauth account routes.
+The repository contains:
 
-### 2) Scientific workflow and AI-assisted validation
-- AI inference endpoint for plant identification support in scientific review.
-- Review queue, per-point review detail, validation decision, and auditable decision history endpoints.
-- Confidence/risk classification logic and domain-level prioritization services.
+- A Django + Django REST Framework backend for web workflows and API services.
+- A React Native/Expo mobile client for field and community use.
+- Scientific and operational modules for enrichment, validation, climate/environmental alerts, and territorial prioritization.
 
-### 3) Environmental and territorial integrations
-- MapBiomas alert endpoints (alerts, detail, territories, CAR/property checks, point-level analysis).
-- Climate alert endpoints (active alerts, historical alerts, operational status, synchronization).
-- Territorial prioritization and domain services for environmental context.
+## Scientific motivation
 
-### 4) Mobile app (Expo/React Native)
-- Dedicated mobile client with Expo SDK 54 and React Native 0.81.
-- Mobile parity API endpoints for image identification, map previews, and offline base metadata/download.
-- Device-facing scripts for Android, iOS, web, diagnostics, and CI-oriented mobile tests.
+PANC records often require decentralized collection and qualified review workflows. ColaboraPANC addresses this by combining:
 
-### 5) Auxiliary collaboration modules
-- Notifications and push token flows.
-- Conversations/messages APIs.
-- Gamification, missions, rankings, and community/group experiences.
-- Enrichment and integration health capabilities for external providers.
+- citizen contributions;
+- AI-assisted identification support;
+- auditable human-in-the-loop validation;
+- environmental and territorial analysis services.
 
-### 6) Tests and operation
-- Automated test suite under `tests/` covering scientific core, permissions, enrichment, integrations, climate, environmental alerts, and related services.
-- Operational routes such as healthcheck (`/healthz/`) and admin integration status/testing endpoints.
+This enables reproducible software-assisted workflows for biodiversity, food security, and agroecological mapping contexts.
 
-## Current technology stack
+## Core features
 
-- **Backend:** Django 4.2, Django REST Framework, django-allauth.
-- **Database:** PostgreSQL + PostGIS.
-- **GIS dependencies:** GDAL.
-- **Mobile:** Expo SDK 54, React Native 0.81.
-- **Testing:** pytest + pytest-django (backend), jest/jest-expo (mobile).
+- Collaborative point registration and moderation flows.
+- AI-assisted plant identification and review queue support.
+- Taxonomic enrichment integrations (e.g., GBIF, iNaturalist, Tropicos, Wikimedia).
+- Environmental integrations (e.g., MapBiomas and climate alert services).
+- Mobile parity endpoints for map, image identification, and offline metadata access.
 
-## Quick start
+## Architecture overview
 
-### Backend
+- **Backend:** Django project (`config/`) and core application (`mapping/`).
+- **Services layer:** domain/integration services under `mapping/services/`.
+- **Tests:** backend/domain tests in `tests/` and module-level tests.
+- **Mobile app:** Expo/React Native app under `mobile/`.
+- **Documentation:** bilingual canonical docs under `docs/en` and `docs/pt-BR`.
+
+For structure details, see [`docs/en/project_structure.md`](./docs/en/project_structure.md).
+
+## Technology stack
+
+- Python + Django 4.2
+- Django REST Framework
+- PostgreSQL + PostGIS
+- GDAL-based geospatial dependencies
+- React Native + Expo (mobile)
+- pytest/pytest-django (backend tests)
+
+## Installation and quick start
+
+### Backend (local)
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements_core.txt
+cp .env.example .env
 python manage.py migrate
 python manage.py runserver 0.0.0.0:8000
 ```
 
 Default local URL: `http://localhost:8000`.
 
-### Mobile
+### Mobile (local)
 
 ```bash
 cd mobile
@@ -66,13 +73,59 @@ npm install
 npm start
 ```
 
-## Documentation entry points
+## Reproducible minimal workflow
 
-- **Documentation hub:** [`docs/README.md`](./docs/README.md)
-- **Canonical English index:** [`docs/en/index.md`](./docs/en/index.md)
-- **Canonical Portuguese (Brazil) index:** [`docs/pt-BR/index.md`](./docs/pt-BR/index.md)
+1. Configure local environment from `.env.example`.
+2. Run database migrations.
+3. Start backend server.
+4. Execute backend tests.
+5. Optionally run mobile app against local API.
 
-## Project metadata
+See reproducibility guide: [`docs/en/reproducibility.md`](./docs/en/reproducibility.md).
+
+## Project structure
+
+A concise structure map is available at:
+
+- [`docs/en/project_structure.md`](./docs/en/project_structure.md)
+
+## Documentation index
+
+- Documentation hub: [`docs/README.md`](./docs/README.md)
+- Canonical English docs: [`docs/en/index.md`](./docs/en/index.md)
+- Canonical PT-BR docs: [`docs/pt-BR/index.md`](./docs/pt-BR/index.md)
+
+## Testing
+
+Evaluator-focused testing instructions:
+
+- [`docs/en/testing.md`](./docs/en/testing.md)
+
+## Practical/scientific use cases
+
+- Community-supported georeferenced PANC mapping.
+- Expert-assisted validation of citizen-contributed records.
+- Territorial/environmental support for agroecological planning.
+- Educational and extension workflows connecting mobile field collection and web curation.
+
+## Known limitations
+
+- External provider APIs may require credentials and quota.
+- Production-grade infrastructure setup is environment-specific.
+- Formal archival identifiers (DOI/PID) depend on external publication workflows.
+
+## How to cite this software
+
+- Citation metadata guidance: [`docs/en/citation.md`](./docs/en/citation.md)
+- Metadata files (to be finalized with authors): `CITATION.cff` and `codemeta.json`.
+
+## Release and archival status
+
+- Public release/tagging workflow is documented locally but must be executed by maintainers.
+- DOI/PID assignment and archival publication are external actions and currently pending.
+- SoftwareX manuscript transfer to official journal template is pending.
+
+## Governance and project metadata
 
 - [Contributing Guidelines](./CONTRIBUTING.md)
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
