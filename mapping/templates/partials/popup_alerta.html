@@ -1,0 +1,37 @@
+{# templates/partials/popup_alerta.html #}
+
+{% if alertas %}
+<div class="mt-2">
+    {% for alerta in alertas %}
+        <div class="alert alert-warning p-2 small mb-2 border rounded shadow-sm">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                {% if alerta.icone %}
+                    <img src="{{ alerta.icone }}" alt="Ícone" width="24" height="24">
+                {% endif %}
+                <strong>{{ alerta.tipo }}</strong>
+                <span class="badge bg-{{ alerta.severidade|lower }} ms-1">
+                    {{ alerta.severidade }}
+                </span>
+            </div>
+            <small class="text-muted">
+                {{ alerta.inicio|date:"d/m H:i" }} &rarr; {{ alerta.fim|date:"d/m H:i" }}
+            </small>
+            <div class="mt-1">{{ alerta.descricao|truncatechars:80 }}</div>
+            {% if user.is_staff %}
+            <div class="mt-2 d-flex gap-2">
+                <a href="{% url 'alerta_editar' alerta.pk %}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <a href="{% url 'alerta_excluir' alerta.pk %}" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i> Excluir
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="mt-2">
+    <span class="text-muted small"><i class="bi bi-check-circle"></i> Nenhum alerta climático ativo para este ponto.</span>
+</div>
+{% endif %}

@@ -1,0 +1,727 @@
+{% extends "mapping/base.html" %}
+{% load static leaflet_tags %}
+
+{% block title %}Cadastro de Ponto de PANC{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  {% leaflet_css %}
+  {% leaflet_js plugins="forms" %}
+  <style>
+        body, html, [data-bs-theme] { background: #f6f8fa !important; }
+        .form-card {
+            max-width: 1040px; margin: 2.5rem auto 2rem auto;
+            background: #fff; border-radius: 22px;
+            box-shadow: 0 8px 40px rgba(32,60,32,0.11);
+            padding: 2.5rem 3rem 2.5rem 3rem;
+        }
+        .form-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem; gap: 1.2rem; }
+        .form-header .title-wrap { display: flex; align-items: center; }
+        .form-header i { font-size: 2.4rem; color: #249251; margin-right: 0.7rem; }
+        .form-header h2 { font-weight: 800; color: #249251; margin-bottom: 0; font-size: 1.8rem;}
+        .form-subtitle { color: #6c757d; font-size: 0.95rem; margin-top: 0.35rem; }
+        .form-label {
+            font-weight: 700;
+            color: #249251;
+            margin-bottom: 0.6rem;
+            display: block;
+        }
+        .form-label small {
+            font-weight: 400;
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-left: 0.3rem;
+        }
+        .form-section { margin-bottom: 2rem; }
+        .section-card {
+            border-radius: 18px;
+            background: #f9fbfa;
+            border: 1px solid #eef3f0;
+            padding: 1.6rem 1.8rem;
+            box-shadow: inset 0 0 0 1px rgba(36,146,81,0.03);
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .section-title h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1f6f44;
+            margin: 0;
+        }
+        .section-title span {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .alert { border-radius: 10px; font-size: 0.95rem; margin-top: .5rem; }
+        .photo-preview { margin-top: 0.8rem; margin-bottom: 0.8rem; }
+        .photo-preview img { max-width: 180px; max-height: 140px; border-radius: 10px; border: 2px solid #dee2e6; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .btn-main {
+            background: linear-gradient(90deg,#249251,#17884e);
+            color: #fff; border: none; border-radius: 10px;
+            padding: 0.85rem 3rem; font-weight: 800; font-size: 1.15rem;
+            transition: all .2s;
+            box-shadow: 0 4px 20px rgba(32,80,32,0.15);
+        }
+        .btn-main:hover, .btn-main:focus {
+            background: linear-gradient(90deg,#17884e,#249251);
+            box-shadow: 0 6px 25px rgba(32,80,32,0.25);
+            transform: translateY(-2px);
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            font-size: 1rem;
+            min-height: 48px;
+            background: #fff;
+            color: #242c2b;
+            border: 1.5px solid #dee2e6;
+            transition: border-color .2s, box-shadow .2s;
+            padding: 0.75rem 1rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #249251;
+            box-shadow: 0 0 0 0.2rem rgba(36,146,81,0.15);
+        }
+        textarea.form-control {
+            min-height: 120px;
+        }
+        input::placeholder, textarea::placeholder { color: #999 !important; }
+        .form-grid {
+            display: grid;
+            gap: 1.4rem;
+        }
+        .form-grid.two-cols {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .form-grid.three-cols {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        @media (max-width: 1100px) {
+            .form-grid.three-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 900px) {
+            .form-card{padding:1.5rem 1.2rem;}
+            .form-grid.two-cols,
+            .form-grid.three-cols { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .form-header{flex-direction:column;align-items:flex-start;}
+            .form-header h2{font-size:1.3rem; margin-top: 0.5rem;}
+        }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+        }
+        .status-indicator.loading {
+            background: #e7f3ff;
+            color: #0066cc;
+        }
+        .status-indicator.success {
+            background: #d1f4e0;
+            color: #0d7a3f;
+        }
+        .status-indicator.error {
+            background: #ffe5e5;
+            color: #c41e3a;
+        }
+        .enrichment-panel {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.9rem 1rem;
+            margin-top: 0.8rem;
+        }
+        .enrichment-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .8rem;
+            border-radius: 999px;
+            padding: .25rem .7rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+        }
+        .enrichment-chip.completo { background:#dcfce7; color:#166534; }
+        .enrichment-chip.parcial { background:#fef3c7; color:#92400e; }
+        .enrichment-chip.pendente { background:#e2e8f0; color:#334155; }
+        .enrichment-chip.falho { background:#fee2e2; color:#991b1b; }
+        .enrichment-meta { color:#475569; font-size:.88rem; margin-bottom:.15rem; }
+
+        /* LEAFLET MAPA MODERNO/CLEAN */
+        #id_localizacao-map {
+            width: 100%; max-width: 570px;
+            height: 360px; margin: 0 auto 16px auto;
+            border-radius: 15px; box-shadow: 0 2px 28px rgba(39,140,70,0.11);
+            overflow: hidden; background: #eaf6ef;
+            transition: box-shadow .2s;
+        }
+        .map-shell {
+            width: 100%;
+            height: 460px;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 24px rgba(39,140,70,0.12);
+            border: 1px solid #e3efe7;
+            overflow: hidden;
+        }
+        .map-footer {
+            background: #f4f7f5;
+            border-radius: 12px;
+            border: 1px solid #e0e8e3;
+        }
+        .leaflet-container {
+            font-family: 'Inter', Arial, sans-serif !important;
+            border-radius: 15px !important;
+            box-shadow: none !important;
+        }
+        .leaflet-bar {
+            border-radius: 12px !important;
+            background: #fff !important;
+            box-shadow: 0 2px 14px rgba(32,80,32,0.11) !important;
+        }
+        .leaflet-bar a, .leaflet-bar a:hover {
+            background: #fff !important;
+            color: #17884e !important;
+            border: none !important;
+            width: 38px; height: 38px;
+            font-size: 1.8rem !important;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .15s;
+        }
+        .leaflet-bar a:active { background: #e5f6eb !important; }
+        .leaflet-control-layers, .leaflet-control-attribution.leaflet-control { display: none !important; }
+        .leaflet-draw-tooltip {
+            border-radius: 8px !important;
+            background: #f9fffc !important;
+            font-size: 1em !important;
+            color: #17884e !important;
+            border: 1px solid #17884e !important;
+            box-shadow: 0 2px 8px rgba(39,140,70,0.08);
+            font-weight: 600;
+        }
+        .leaflet-top, .leaflet-bottom { z-index: 600 !important; }
+        .leaflet-draw-draw-polyline,
+        .leaflet-draw-draw-polygon,
+        .leaflet-draw-draw-rectangle,
+        .leaflet-draw-draw-circle,
+        .leaflet-draw-draw-circlemarker { display: none !important; }
+        .leaflet-draw-toolbar .leaflet-draw-draw-marker {
+            background-image: url("{% static 'mapapanc/icons/marker.png' %}") !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-size: 32px 32px !important;
+        }
+        .leaflet-draw-edit-edit,
+        .leaflet-draw-edit-edit:focus,
+        .leaflet-draw-edit-edit:hover,
+        .leaflet-draw-edit-edit.leaflet-disabled {
+            background-image: url("{% static 'mapapanc/icons/edit-wrench.png' %}") !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-size: 32px 32px !important;
+        }
+        .leaflet-draw-edit-remove,
+        .leaflet-draw-edit-remove:focus,
+        .leaflet-draw-edit-remove:hover,
+        .leaflet-draw-edit-remove.leaflet-disabled {
+            background-image: url("{% static 'mapapanc/icons/trash.png' %}") !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            background-size: 32px 32px !important;
+        }
+        .leaflet-draw-toolbar a span,
+        .leaflet-draw-toolbar label { display: none !important; }
+        .leaflet-draw-toolbar a,
+        .leaflet-draw-toolbar .leaflet-draw-toolbar-button {
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 12px !important;
+            border: 1.5px solid #d2edd9 !important;
+            background-color: #fff !important;
+            transition: background 0.15s, border 0.15s;
+            box-shadow: 0 2px 8px rgba(40,60,40,0.10);
+        }
+        .leaflet-draw-toolbar a:hover {
+            background-color: #e6faef !important;
+            border-color: #249251 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<script>document.documentElement.setAttribute('data-bs-theme', 'light');</script>
+
+<div class="form-card" aria-label="Formulário de cadastro de ponto">
+    <!-- Cabeçalho -->
+    <div class="form-header">
+        <div class="title-wrap">
+            <a href="{% url 'mapa' %}" title="Voltar"><i class="bi bi-arrow-left-circle"></i></a>
+            <div>
+                <h2 class="ms-2">Cadastro de Ponto de PANC</h2>
+                <div class="form-subtitle ms-2">Registre um ponto com identificação, endereço e localização precisa.</div>
+            </div>
+        </div>
+        <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
+            <i class="bi bi-stars me-1"></i> IA + Mapa inteligente
+        </span>
+    </div>
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {% for err in form.non_field_errors %}<div>{{ err }}</div>{% endfor %}
+      </div>
+    {% endif %}
+    {% if identificacao_preview %}
+    {% if identificacao_preview.nome_popular or identificacao_preview.nome_cientifico %}
+      <div class="alert alert-success">
+        <i class="bi bi-lightbulb-fill me-2"></i>
+        Sugestão automática: <strong>{{ identificacao_preview.nome_popular|default:"(sem nome popular)" }}</strong>
+        {% if identificacao_preview.nome_cientifico %} · <em>{{ identificacao_preview.nome_cientifico }}</em>{% endif %}
+        {% if identificacao_preview.fonte %}<small class="ms-2 text-muted">Fonte: {{ identificacao_preview.fonte }}</small>{% endif %}
+      </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Identificação por Foto -->
+    <div class="form-section section-card">
+        <div class="section-title">
+            <h3><i class="bi bi-camera-fill me-2"></i>Identificação por foto</h3>
+            <span>Opcional · IA sugere nome popular e científico</span>
+        </div>
+        <div class="form-grid two-cols align-items-center">
+            <div>
+                <label class="form-label" for="id_identificacao_foto">
+                    Foto para identificação
+                    <small>(aceita imagens nítidas da planta)</small>
+                </label>
+                <input type="file" id="id_identificacao_foto" accept="image/*" class="form-control" aria-label="Foto para identificação automática">
+            </div>
+            <div class="d-flex flex-column gap-2">
+                <button type="button" id="btn-identificar" class="btn btn-outline-success px-4 align-self-start">
+                    <i class="bi bi-stars"></i> Identificar com IA
+                </button>
+                <small class="text-muted">Dica: fotos com boa iluminação aumentam a precisão.</small>
+            </div>
+        </div>
+        <div id="identificacao-resultado" class="alert d-none mt-3" role="alert" aria-live="polite" hidden></div>
+    </div>
+
+    <!-- Formulário principal -->
+    <form method="post" enctype="multipart/form-data" id="form-ponto" autocomplete="off">
+        {% csrf_token %}
+        <div class="form-section section-card">
+            <div class="section-title">
+                <h3><i class="bi bi-ui-checks me-2"></i>Detalhes do ponto</h3>
+                <span>Campos principais do cadastro</span>
+            </div>
+            <div class="row g-4">
+            <!-- Nome Popular -->
+            <div class="col-md-6">
+                <label class="form-label" for="id_nome_popular">
+                    <i class="bi bi-flower1"></i> Nome popular <span class="text-danger">*</span>
+                </label>
+                {{ form.nome_popular }}<datalist id="datalist-nome-popular"></datalist>
+                {% if form.nome_popular.errors %}
+                    <div class="alert alert-danger mt-2">{{ form.nome_popular.errors.0|escape }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Nome Científico -->
+            <div class="col-md-6">
+                <label class="form-label" for="id_nome_cientifico">
+                    <i class="bi bi-journal-text"></i> Nome científico
+                    <small>(auto-preenchido)</small>
+                </label>
+                {{ form.nome_cientifico }}
+                <input type="hidden" name="nome_resolucao_origem" id="id_nome_resolucao_origem" value="manual">
+                {% if form.nome_cientifico.errors %}
+                    <div class="alert alert-danger mt-2">{{ form.nome_cientifico.errors.0|escape }}</div>
+                {% endif %}
+                <small id="nome-autocomplete-status" class="text-muted d-block mt-2"></small>
+                <div class="enrichment-panel" id="enrichment-panel-cadastro">
+                    <div class="enrichment-meta" id="nome-submetido-meta">Nome informado: <strong>{{ ponto.nome_cientifico_submetido|default:"-" }}</strong></div>
+                    <div class="enrichment-meta" id="nome-validado-meta">Nome validado: <strong>{{ ponto.nome_cientifico_validado|default:"aguardando" }}</strong></div>
+                    <div class="enrichment-meta" id="enrichment-fallback-meta">
+                        O enriquecimento automático usa nome científico como prioridade e preserva dados locais validados.
+                    </div>
+                    {% if ponto.comestibilidade_confirmada %}<div class="enrichment-meta">Comestível (integração): <strong>{{ ponto.comestibilidade_status }}</strong></div>{% endif %}
+                    {% if ponto.parte_comestivel_confirmada %}<div class="enrichment-meta">Parte comestível: <strong>{{ ponto.parte_comestivel_lista|join:", " }}</strong></div>{% endif %}
+                    {% if ponto.frutificacao_confirmada %}<div class="enrichment-meta">Frutificação: <strong>{{ ponto.frutificacao_meses|join:", " }}</strong></div>{% endif %}
+                    {% if ponto.colheita_confirmada %}<div class="enrichment-meta">Colheita: <strong>{{ ponto.colheita_periodo }}</strong></div>{% endif %}
+                    {% if not ponto.comestibilidade_confirmada and not ponto.parte_comestivel_confirmada and not ponto.frutificacao_confirmada and not ponto.colheita_confirmada %}<div class="enrichment-meta text-muted">Campos alimentares ocultados por ausência de evidência suficiente.</div>{% endif %}
+                    {% if ponto.validacao_pendente_revisao_humana %}
+                      <div class="enrichment-meta text-warning"><i class="bi bi-exclamation-triangle"></i> Revisão humana necessária</div>
+                    {% endif %}
+                    {% if edicao and ponto.id %}
+                    <button type="button" class="btn btn-sm btn-outline-success mt-2" id="btn-revalidar-web" data-ponto-id="{{ ponto.id }}">
+                        <i class="bi bi-arrow-clockwise"></i> Revalidar dados taxonômicos
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tipo de Local -->
+            <div class="col-md-12">
+                <label class="form-label" for="id_tipo_local">
+                    <i class="bi bi-geo"></i> Tipo de local
+                </label>
+                {{ form.tipo_local }}
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="id_comestibilidade_status">
+                    <i class="bi bi-check2-circle"></i> Comestível
+                </label>
+                {{ form.comestibilidade_status }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="id_parte_comestivel_manual">
+                    <i class="bi bi-nut"></i> Parte comestível
+                </label>
+                {{ form.parte_comestivel_manual }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="id_frutificacao_manual">
+                    <i class="bi bi-flower3"></i> Frutificação
+                </label>
+                {{ form.frutificacao_manual }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="id_colheita_manual">
+                    <i class="bi bi-basket2"></i> Colheita
+                </label>
+                {{ form.colheita_manual }}
+            </div>
+
+            <!-- Endereço -->
+            <div class="col-md-12">
+                <label class="form-label" for="id_endereco">
+                    <i class="bi bi-signpost-2"></i> Endereço
+                    <small>(auto-preenchido ao clicar no mapa)</small>
+                </label>
+                {{ form.endereco }}
+                <span id="endereco-loader" class="status-indicator loading" style="display:none">
+                    <i class="bi bi-arrow-repeat spin"></i> Buscando endereço...
+                </span>
+            </div>
+
+            <!-- Número, Bairro -->
+            <div class="col-md-3">
+                <label class="form-label" for="id_numero">
+                    <i class="bi bi-hash"></i> Número
+                </label>
+                {{ form.numero }}
+            </div>
+            <div class="col-md-9">
+                <label class="form-label" for="id_bairro">
+                    <i class="bi bi-building"></i> Bairro
+                    <small>(auto-preenchido)</small>
+                </label>
+                {{ form.bairro }}
+            </div>
+
+            <!-- Cidade, Estado -->
+            <div class="col-md-8">
+                <label class="form-label" for="id_cidade">
+                    <i class="bi bi-pin-map"></i> Cidade
+                    <small>(auto-preenchido)</small>
+                </label>
+                {{ form.cidade }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="id_estado">
+                    <i class="bi bi-map"></i> Estado
+                    <small>(auto-preenchido)</small>
+                </label>
+                {{ form.estado }}
+            </div>
+
+            <!-- Colaborador -->
+            <div class="col-md-12">
+                <label class="form-label" for="id_colaborador">
+                    <i class="bi bi-person-circle"></i> Colaborador
+                    <small>(preenchido automaticamente)</small>
+                </label>
+                <input type="text" id="id_colaborador" class="form-control" value="{{ request.user.username }}" readonly>
+            </div>
+
+            <!-- Relato -->
+            <div class="col-12">
+                <label class="form-label" for="id_relato">
+                    <i class="bi bi-chat-left-text"></i> Relato/Observação
+                    <small>(opcional - conte mais sobre este ponto)</small>
+                </label>
+                {{ form.relato }}
+            </div>
+            </div>
+        </div>
+
+        <!-- Mapa -->
+        <div class="form-section section-card">
+            <div class="section-title">
+                <h3><i class="bi bi-geo-alt-fill me-2"></i>Localização no mapa</h3>
+                <span>Obrigatório · clique no mapa para preencher endereço</span>
+            </div>
+            <div class="alert alert-info d-flex align-items-center gap-2 py-3 px-3 mb-3" style="background-color: #e7f3ff; border-color: #bee5eb;">
+                <i class="bi bi-info-circle-fill" style="font-size: 1.2rem;"></i>
+                <span><strong>Como usar:</strong> Clique no mapa para marcar a localização exata onde a planta foi encontrada. O endereço será preenchido automaticamente.</span>
+            </div>
+
+            <!-- Mapa -->
+            <div id="mapa-geopanc" class="map-shell"></div>
+
+            <!-- Campo hidden do formulário -->
+            {{ form.localizacao }}
+
+            <!-- Exibição de coordenadas e botão -->
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 p-3 map-footer">
+                <div id="coordenadas-info">
+                    <i class="bi bi-pin-map-fill text-success"></i>
+                    <strong>Coordenadas:</strong>
+                    <span id="coordenadas-exatas" class="text-dark ms-1">Aguardando seleção no mapa...</span>
+                </div>
+                <button type="button" id="btn-direcionar" class="btn btn-sm btn-outline-primary" disabled>
+                    <i class="bi bi-box-arrow-up-right"></i> Ver no Google Maps
+                </button>
+            </div>
+
+            {% if form.localizacao.errors %}
+                <div class="alert alert-danger mt-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i> {{ form.localizacao.errors.0|escape }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Foto -->
+        <div class="form-section section-card">
+            <div class="section-title">
+                <h3><i class="bi bi-image-fill me-2"></i>Foto do ponto</h3>
+                <span>Opcional · ajuda na validação</span>
+            </div>
+            <label class="form-label" for="id_foto">
+                Foto do local
+                <small>(opcional - adicione uma foto do local)</small>
+            </label>
+            {{ form.foto }}
+            <div class="photo-preview" id="photo-preview">
+                {% if form.instance.foto %}
+                    <img src="{{ form.instance.foto.url }}" alt="Foto atual">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Nota sobre enriquecimento -->
+        <div class="alert alert-info mt-3" style="border-radius:12px;">
+            <i class="bi bi-info-circle me-1"></i>
+            <small>
+                Ao cadastrar, o sistema consultará automaticamente
+                <strong>Global Names</strong>, <strong>Tropicos</strong>,
+                <strong>GBIF</strong> e <strong>iNaturalist</strong>
+                para validar e enriquecer os dados taxonômicos.
+                O cadastro será salvo mesmo que alguma fonte esteja indisponível.
+            </small>
+        </div>
+
+        <!-- Submit -->
+        <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-main" id="btn-submit">
+                <i class="bi bi-check-circle-fill"></i> Cadastrar Ponto de PANC
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.super }}
+  
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  
+  <!-- Leaflet CDN (deixe aqui ou no base.html) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- JS dos recursos -->
+  <script src="{% static 'mapapanc/js/geocodificacao_locationiq.js' %}"></script>
+  <script src="{% static 'mapapanc/js/preview_foto.js' %}"></script>
+  <script src="{% static 'mapapanc/js/identificacao_planta.js' %}"></script>
+  <script src="{% static 'mapapanc/js/autocomplete_nome.js' %}"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const nomeCientificoInput = document.getElementById('id_nome_cientifico');
+      const nomeSubmetidoMeta = document.getElementById('nome-submetido-meta');
+      const fallbackMeta = document.getElementById('enrichment-fallback-meta');
+      const btnRevalidar = document.getElementById('btn-revalidar-web');
+
+      nomeCientificoInput?.addEventListener('input', function () {
+          const valor = (nomeCientificoInput.value || '').trim();
+          if (nomeSubmetidoMeta) {
+              nomeSubmetidoMeta.innerHTML = `Nome informado: <strong>${valor || '-'}</strong>`;
+          }
+          if (fallbackMeta && valor.length > 2) {
+              fallbackMeta.textContent = 'Dados serão validados após salvar, com precedência para dados locais confirmados.';
+          }
+      });
+
+      btnRevalidar?.addEventListener('click', async function () {
+          const pontoId = btnRevalidar.dataset.pontoId;
+          if (!pontoId) return;
+          btnRevalidar.disabled = true;
+          btnRevalidar.innerHTML = '<span class=\"spinner-border spinner-border-sm\"></span> Revalidando...';
+          try {
+              const response = await fetch(`/api/pontos/${pontoId}/revalidar/`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
+                  },
+                  body: '{}',
+              });
+              if (!response.ok) throw new Error('Falha na revalidação');
+              if (fallbackMeta) fallbackMeta.textContent = 'Revalidação solicitada. Atualize a página em instantes para ver os dados consolidados.';
+          } catch (err) {
+              if (fallbackMeta) fallbackMeta.textContent = 'Não foi possível revalidar agora. Tente novamente em instantes.';
+          } finally {
+              btnRevalidar.disabled = false;
+              btnRevalidar.innerHTML = '<i class=\"bi bi-arrow-clockwise\"></i> Revalidar dados taxonômicos';
+          }
+      });
+
+      // Inicializa o mapa
+      var map = L.map('mapa-geopanc', {
+          zoomControl: true,
+          attributionControl: true
+      }).setView([-14.2, -51.9], 4);
+
+      // Adiciona camada de tiles com atribuição
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          maxZoom: 19,
+          minZoom: 3
+      }).addTo(map);
+
+      var marker;
+      var inputLocalizacao = document.getElementById("id_localizacao");
+      var coordenadasExatas = document.getElementById("coordenadas-exatas");
+
+      // Ícone personalizado para o marcador
+      var customIcon = L.icon({
+          iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41]
+      });
+
+      // Se já existir valor no campo, adiciona marcador e centraliza
+      var localizacao = inputLocalizacao.value;
+      var match = localizacao.match(/^POINT\s*\(([-\d.]+)\s+([-\d.]+)\)$/);
+      if (match) {
+          var lng = parseFloat(match[1]);
+          var lat = parseFloat(match[2]);
+          marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
+          marker.bindPopup("<b>Localização selecionada</b><br>Lat: " + lat + "<br>Lng: " + lng).openPopup();
+          map.setView([lat, lng], 15);
+
+          // Atualiza coordenadas e endereço
+          if (window.fillAddress) {
+              window.fillAddress({lat: lat, lng: lng});
+          }
+      }
+
+      // Evento de clique no mapa
+      map.on('click', function(e) {
+          var lat = e.latlng.lat.toFixed(6);
+          var lng = e.latlng.lng.toFixed(6);
+          var pointWKT = `POINT (${lng} ${lat})`;
+
+          inputLocalizacao.value = pointWKT;
+
+          // Remove marcador anterior
+          if (marker) {
+              map.removeLayer(marker);
+          }
+
+          // Adiciona novo marcador com popup
+          marker = L.marker([lat, lng], {icon: customIcon}).addTo(map);
+          marker.bindPopup("<b>📍 Ponto selecionado</b><br>Lat: " + lat + "<br>Lng: " + lng).openPopup();
+
+          // Anima para a posição do marcador
+          map.flyTo([lat, lng], Math.max(map.getZoom(), 15), {
+              duration: 1.5,
+              easeLinearity: 0.25
+          });
+
+          // Chama o reverse geocode e atualiza coordenadas
+          if (window.fillAddress) {
+              window.fillAddress({lat: lat, lng: lng});
+          }
+
+          // Feedback visual no elemento de coordenadas
+          if (coordenadasExatas) {
+              coordenadasExatas.style.fontWeight = 'bold';
+              coordenadasExatas.style.color = '#249251';
+              setTimeout(() => {
+                  coordenadasExatas.style.fontWeight = '';
+                  coordenadasExatas.style.color = '';
+              }, 2000);
+          }
+      });
+
+      // Botão Google Maps
+      const btnDirecionar = document.getElementById("btn-direcionar");
+      if (btnDirecionar) {
+        btnDirecionar.addEventListener("click", function () {
+          const v = inputLocalizacao.value;
+          const m = v.match(/^POINT\s*\(([-\d.]+)\s+([-\d.]+)\)$/);
+          if (m) {
+            window.open(`https://www.google.com/maps/search/?api=1&query=${m[2]},${m[1]}`, "_blank");
+          } else {
+            alert("⚠️ Por favor, clique no mapa para marcar uma localização primeiro.");
+          }
+        });
+      }
+
+      // Tenta obter a localização do usuário
+      if (navigator.geolocation && !localizacao) {
+          navigator.geolocation.getCurrentPosition(
+              function(position) {
+                  var userLat = position.coords.latitude;
+                  var userLng = position.coords.longitude;
+                  map.setView([userLat, userLng], 13);
+
+                  // Adiciona um círculo mostrando a localização aproximada do usuário
+                  L.circle([userLat, userLng], {
+                      color: '#249251',
+                      fillColor: '#249251',
+                      fillOpacity: 0.1,
+                      radius: 500
+                  }).addTo(map).bindPopup("📍 Você está aproximadamente aqui");
+              },
+              function(error) {
+                  console.log("Não foi possível obter a localização do usuário:", error.message);
+              },
+              {
+                  enableHighAccuracy: true,
+                  timeout: 5000,
+                  maximumAge: 0
+              }
+          );
+      }
+  });
+  </script>
+{% endblock %}

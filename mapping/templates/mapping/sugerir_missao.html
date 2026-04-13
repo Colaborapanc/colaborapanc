@@ -1,0 +1,28 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Sugerir Missão{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2><i class="bi bi-lightbulb"></i> Sugerir Nova Missão</h2>
+    <p class="mb-3 text-muted">Deixe sua criatividade fluir! Que tal propor um desafio inusitado para os outros exploradores de PANCs?</p>
+    <form method="post" class="card p-4 shadow-sm" style="max-width: 650px;">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label" for="id_titulo">Título da Missão</label>
+            {{ form.titulo }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="id_descricao">Descrição Detalhada</label>
+            {{ form.descricao }}
+        </div>
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-send"></i> Enviar Sugestão
+        </button>
+    </form>
+    <div class="mt-4">
+        <a href="{% url 'missoes' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Voltar para Missões</a>
+    </div>
+</div>
+{% endblock %}

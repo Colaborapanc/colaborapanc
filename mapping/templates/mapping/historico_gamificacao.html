@@ -1,0 +1,110 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Histórico de Gamificação{% endblock %}
+
+{% block content %}
+<div class="container painel-gamificacao py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <span class="bi bi-clock-history text-success me-2"></span> Meu Histórico de Gamificação
+        </h2>
+        <a href="{% url 'painel_gamificacao' %}" class="btn btn-outline-secondary">
+            ← Voltar ao Painel
+        </a>
+    </div>
+
+    <div class="alert alert-light border fs-6 text-muted mb-4">
+        <span class="bi bi-info-circle-fill"></span>
+        Aqui você encontra o registro de todas suas atividades de gamificação, badges recebidos, rankings alcançados e marcos da sua jornada como PANCzeiro(a)!
+    </div>
+
+    <div class="timeline">
+        {% if historico %}
+            {% for evento in historico %}
+                <div class="timeline-event {% if evento.tipo == 'conquista' %}timeline-conquista{% elif evento.tipo == 'ranking' %}timeline-ranking{% else %}timeline-acao{% endif %}">
+                    <div class="timeline-icon">
+                        {% if evento.tipo == 'conquista' %}
+                            <img src="{{ evento.imagem }}" alt="Conquista" class="rounded-circle border" style="width:40px;height:40px;">
+                        {% elif evento.tipo == 'ranking' %}
+                            <span class="bi bi-trophy-fill text-warning fs-3"></span>
+                        {% elif evento.tipo == 'revisor' %}
+                            <span class="bi bi-star-fill text-success fs-3"></span>
+                        {% else %}
+                            <span class="bi bi-leaf-fill text-success fs-3"></span>
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <div class="fw-semibold fs-5 mb-1">{{ evento.titulo }}</div>
+                        <div class="text-muted small mb-1">
+                            {{ evento.data|date:"d/m/Y H:i" }}
+                        </div>
+                        <div class="fs-6">
+                            {{ evento.descricao }}
+                        </div>
+                        {% if evento.pontos %}
+                            <div class="badge bg-success ms-1 mt-2 fs-6">
+                                +{{ evento.pontos }} <span class="bi bi-coin"></span> pontos
+                            </div>
+                        {% endif %}
+                        {% if evento.rank %}
+                            <div class="badge bg-warning text-dark ms-1 mt-2 fs-6">
+                                Nova posição: <b>#{{ evento.rank }}</b> no ranking!
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="text-center text-muted py-5">
+                <span class="bi bi-emoji-frown fs-2"></span>
+                <div>Nenhuma atividade gamificada registrada ainda.<br>
+                Contribua ou revise para começar sua coleção!</div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<style>
+.timeline {
+    position: relative;
+    margin-left: 1.7rem;
+    border-left: 2px solid #b5e9c8;
+    padding-left: 1.5rem;
+}
+.timeline-event {
+    margin-bottom: 2rem;
+    position: relative;
+    min-height: 60px;
+}
+.timeline-icon {
+    position: absolute;
+    left: -56px;
+    top: 2px;
+    background: #fff;
+    border: 2px solid #b5e9c8;
+    border-radius: 50%;
+    width: 50px; height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 12px rgba(25, 119, 75, .10);
+}
+.timeline-content {
+    background: #f6fcf9;
+    border-radius: 14px;
+    padding: 1.2rem 1.5rem;
+    box-shadow: 0 2px 10px rgba(24,32,42,0.04);
+    margin-left: 1.3rem;
+}
+.timeline-conquista .timeline-content { border-left: 5px solid #ffdb80; }
+.timeline-ranking .timeline-content { border-left: 5px solid #ffb380; }
+.timeline-acao .timeline-content { border-left: 5px solid #249251; }
+@media (max-width: 600px) {
+    .timeline { margin-left: .5rem; padding-left: .7rem; }
+    .timeline-icon { width: 36px; height: 36px; left: -32px; }
+    .timeline-content { padding: .7rem 0.6rem; margin-left: 0.7rem; }
+}
+</style>
+{% endblock %}

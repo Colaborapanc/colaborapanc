@@ -1,0 +1,211 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+{% block title %}Validação do Ponto - Revisão por Pares{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+    .painel-revisao-card {
+        max-width: 720px;
+        margin: 2.5rem auto;
+        background: #fcfdfc;
+        border-radius: 20px;
+        box-shadow: 0 8px 36px rgba(36,146,81,0.14);
+        padding: 2.8rem 2rem 2.3rem 2rem;
+        transition: box-shadow .3s;
+        position: relative;
+    }
+    .painel-revisao-card:hover { box-shadow: 0 16px 54px rgba(36,146,81,0.18);}
+    .painel-revisao-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.4rem; }
+    .painel-revisao-header i { font-size: 2.3rem; color: #249251; }
+    .painel-revisao-status, .painel-revisao-info { margin-bottom: 1.05rem; }
+    .painel-revisao-status .badge { font-size: 1em; padding: 0.7em 1.2em; background: #e8ffef; color: #249251; border: 1.5px solid #a5e7b6; }
+    .painel-revisao-label { font-weight: 600; color: #257745; }
+    .painel-revisao-campo { margin-bottom: 0.65em;}
+    .painel-revisao-foto img { border-radius: 12px; max-width: 320px; box-shadow: 0 3px 20px #24925114; margin: 1.2rem auto 0 auto; display: block;}
+    .painel-revisao-form label { font-weight: 500; margin-top: 0.85rem; }
+    .painel-revisao-btns { margin-top: 2.1rem; display: flex; gap: 1.1rem; flex-wrap: wrap; justify-content: flex-end;}
+    .painel-mini-mapa {height:130px; border-radius:8px; border:1px solid #d3ecd7; margin-bottom:1em;}
+    .painel-badges, .painel-grupos {margin-bottom: 0.6em;}
+    .painel-badges .badge {background: #ffe8be; color:#a66d00; margin-right: 0.18em;}
+    .painel-grupos .badge {background: #e7f5ff; color:#126bac; margin-right: 0.18em;}
+    .painel-feedback {margin-bottom: 1.2em;}
+    .painel-feedback .alert {font-size:0.98em;}
+    @media (max-width: 700px) { .painel-revisao-card { padding: 1.1rem 0.6rem; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="painel-revisao-card">
+
+    <!-- Header -->
+    <div class="painel-revisao-header">
+        <a href="{% url 'painel_validacao' %}" title="Voltar para painel">
+            <i class="bi bi-arrow-left-circle"></i>
+        </a>
+        <h2 class="mb-0">Revisão do Cadastro</h2>
+    </div>
+
+    <!-- Status e resumo -->
+    <div class="painel-revisao-status">
+        <span class="badge rounded-pill">
+            <i class="bi bi-hourglass-split"></i> Em validação por pares
+        </span>
+        <span class="badge rounded-pill ms-2" style="background:#ffe9ec; color:#af3344; border-color:#ffc2ca;">
+            <i class="bi bi-person"></i> {{ ponto.colaborador|default:"Desconhecido" }}
+        </span>
+        {% if ponto.status_identificacao == "sugerido" %}
+            <span class="badge bg-info text-dark ms-2"><i class="bi bi-robot"></i> Sugerido pela IA</span>
+        {% elif ponto.status_identificacao == "confirmado" %}
+            <span class="badge bg-success ms-2"><i class="bi bi-check-circle"></i> Identificação confirmada</span>
+        {% endif %}
+        {% if ponto.status_validacao != "pendente" %}
+            <span class="badge bg-warning text-dark ms-2">
+                <i class="bi bi-info-circle"></i> {{ ponto.get_status_validacao_display }}
+            </span>
+        {% endif %}
+    </div>
+
+    <!-- Badges do colaborador -->
+    {% if ponto.colaborador_user and ponto.colaborador_user.badges.all %}
+        <div class="painel-badges">
+            <span class="painel-revisao-label">Insígnias do colaborador:</span>
+            {% for badge in ponto.colaborador_user.badges.all %}
+                <span class="badge">{{ badge.nome }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Grupos/Comunidades do ponto -->
+    {% if ponto.grupos.all %}
+        <div class="painel-grupos">
+            <span class="painel-revisao-label">Grupos/Comunidades:</span>
+            {% for grupo in ponto.grupos.all %}
+                <span class="badge">{{ grupo.nome }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Feedbacks sobre o ponto -->
+    {% if ponto.feedbacks.all %}
+        <div class="painel-feedback">
+            <span class="painel-revisao-label">Feedbacks recentes:</span>
+            {% for feedback in ponto.feedbacks.all|slice:":2" %}
+                <div class="alert alert-info mb-1">{{ feedback.mensagem }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Dados principais -->
+    <div class="painel-revisao-info">
+        <!-- Nome popular -->
+        <div class="painel-revisao-campo">
+            <span class="painel-revisao-label">Nome popular:</span>
+            <span>
+                {% if ponto.planta and ponto.planta.nome_popular %}
+                    {{ ponto.planta.nome_popular }}
+                {% elif ponto.nome_popular_sugerido %}
+                    {{ ponto.nome_popular_sugerido }}
+                {% else %}-{% endif %}
+            </span>
+        </div>
+        <!-- Nome científico -->
+        <div class="painel-revisao-campo">
+            <span class="painel-revisao-label">Nome científico:</span>
+            <span>
+                {% if ponto.planta and ponto.planta.nome_cientifico %}
+                    {{ ponto.planta.nome_cientifico }}
+                {% elif ponto.nome_cientifico_sugerido %}
+                    {{ ponto.nome_cientifico_sugerido }}
+                {% else %}-{% endif %}
+            </span>
+        </div>
+        <!-- Localização -->
+        <div class="painel-revisao-campo">
+            <span class="painel-revisao-label">Localização:</span>
+            <span>
+                {{ ponto.endereco|default_if_none:"" }}
+                {% if ponto.numero %}, Nº {{ ponto.numero }}{% endif %}
+                {% if ponto.bairro %}, Bairro {{ ponto.bairro }}{% endif %}
+                {% if ponto.cidade %}, {{ ponto.cidade }}{% endif %}
+                {% if ponto.estado %} - {{ ponto.estado }}{% endif %}
+            </span>
+            {% if ponto.localizacao %}
+                <a href="https://www.google.com/maps/search/?api=1&query={{ ponto.localizacao.y }},{{ ponto.localizacao.x }}" target="_blank" class="btn btn-sm btn-outline-primary ms-1" title="Ver no Google Maps">
+                    <i class="bi bi-geo-alt"></i>
+                </a>
+                <div id="mini-mapa" class="painel-mini-mapa"></div>
+            {% endif %}
+        </div>
+        <!-- Tipo de local -->
+        <div class="painel-revisao-campo">
+            <span class="painel-revisao-label">Tipo de local:</span>
+            <span>{{ ponto.get_tipo_local_display|default:"-" }}</span>
+        </div>
+        <!-- Relato/Observação -->
+        <div class="painel-revisao-campo">
+            <span class="painel-revisao-label">Relato/Observação:</span>
+            <span>{{ ponto.relato|default:"-" }}</span>
+        </div>
+    </div>
+
+    <!-- Foto do ponto -->
+    {% if ponto.foto %}
+        <div class="painel-revisao-foto">
+            <img src="{{ ponto.foto.url }}" alt="Foto do ponto cadastrado">
+        </div>
+    {% endif %}
+
+    <!-- Formulário de parecer -->
+    <form method="post" class="painel-revisao-form" id="form-parecer">{% csrf_token %}
+        <label for="parecer" class="form-label painel-revisao-label">Parecer:</label>
+        <select id="parecer" name="parecer" class="form-select" required>
+            <option value="">Selecione...</option>
+            <option value="aprovado">Aprovar</option>
+            <option value="reprovado">Reprovar</option>
+            <option value="pendencia">Pendência para ajuste</option>
+        </select>
+        <label for="comentario" class="form-label painel-revisao-label mt-2">Comentário ao autor (opcional):</label>
+        <textarea id="comentario" name="comentario" rows="3" class="form-control" placeholder="Explique o motivo do parecer, faça sugestões, etc."></textarea>
+
+        <div class="painel-revisao-btns">
+            <button type="submit" class="btn btn-success" id="btn-enviar">
+                <i class="bi bi-check-circle"></i> Enviar parecer
+            </button>
+            <a href="{% url 'painel_validacao' %}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{% if ponto.localizacao %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function(){
+        // Mini-mapa de localização no card de validação
+        let lat = {{ ponto.localizacao.y }};
+        let lng = {{ ponto.localizacao.x }};
+        let mapDiv = document.getElementById('mini-mapa');
+        if(mapDiv) {
+            let map = L.map(mapDiv, {zoomControl:false, attributionControl:false, dragging:false, scrollWheelZoom:false, doubleClickZoom:false, boxZoom:false, keyboard:false});
+            map.setView([lat, lng], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:18}).addTo(map);
+            L.marker([lat, lng]).addTo(map);
+        }
+    });
+    </script>
+{% endif %}
+<script>
+document.getElementById('form-parecer').addEventListener('submit', function(e){
+    document.getElementById('btn-enviar').disabled = true;
+    document.getElementById('btn-enviar').innerHTML = '<span class="spinner-border spinner-border-sm"></span> Enviando...';
+});
+</script>
+{% endblock %}

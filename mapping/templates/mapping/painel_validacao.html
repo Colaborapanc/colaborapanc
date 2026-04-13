@@ -1,0 +1,96 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+{% block title %}Painel de Validação de Pontos{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex align-items-center mb-4">
+        <h2 class="text-success fw-bold mb-0">
+            <i class="bi bi-shield-check"></i> Painel de Validação
+        </h2>
+        <span class="badge bg-primary ms-3 fs-6">{{ pontos|length }} ponto{{ pontos|length|pluralize }}</span>
+        <a href="{% url 'mapa' %}" class="btn btn-outline-secondary ms-auto">
+            <i class="bi bi-map"></i> Voltar ao mapa
+        </a>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form id="filtro-validacao" class="row gy-2 gx-3 align-items-end">
+                <div class="col-md-3 col-12">
+                    <input type="text" class="form-control" id="filtro-colaborador" placeholder="Colaborador" autocomplete="off">
+                </div>
+                <div class="col-md-3 col-6">
+                    <input type="text" class="form-control" id="filtro-nome" placeholder="Nome popular" autocomplete="off">
+                </div>
+                <div class="col-md-3 col-6">
+                    <input type="text" class="form-control" id="filtro-cidade" placeholder="Cidade" autocomplete="off">
+                </div>
+                <div class="col-md-2 col-12 text-end">
+                    <button type="submit" class="btn btn-outline-success w-100">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if pontos %}
+        <div class="row g-4">
+            {% for ponto in pontos %}
+                <div class="col-lg-6 col-xl-4">
+                    <div class="card shadow border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex align-items-center mb-1">
+                                <span class="badge rounded-pill
+                                    {% if ponto.status_validacao == 'aprovado' %} bg-success
+                                    {% elif ponto.status_validacao == 'pendente' %} bg-warning text-dark
+                                    {% elif ponto.status_validacao == 'reprovado' %} bg-danger
+                                    {% else %} bg-info text-dark
+                                    {% endif %} me-2 fs-6">
+                                    {% if ponto.status_validacao == 'aprovado' %}<i class="bi bi-patch-check"></i> Aprovado
+                                    {% elif ponto.status_validacao == 'pendente' %}<i class="bi bi-hourglass-split"></i> Pendente
+                                    {% elif ponto.status_validacao == 'reprovado' %}<i class="bi bi-x-octagon"></i> Reprovado
+                                    {% else %}<i class="bi bi-info-circle"></i> Pendência{% endif %}
+                                </span>
+                                <span class="fw-bold text-success small">
+                                    {{ ponto.planta.nome_popular|default:ponto.nome_popular_sugerido|default:"Sem identificação" }}
+                                </span>
+                            </div>
+                            <p class="mb-0 text-muted small">{{ ponto.cidade }}, {{ ponto.estado }}</p>
+                            {% if ponto.foto %}
+                                <img src="{{ ponto.foto.url }}" alt="Foto" class="rounded mb-2 mt-2" style="max-width: 96px; max-height: 62px;">
+                            {% endif %}
+                            <div class="mt-auto d-flex gap-2">
+                                <a href="{% url 'validar_ponto' ponto.id %}" class="btn btn-outline-success btn-sm">
+                                    <i class="bi bi-check-circle"></i> Validar
+                                </a>
+                                <a href="{% url 'detalhe_ponto' ponto.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i> Ver
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-footer text-end small text-muted py-2 px-3">
+                            Enviado em: {{ ponto.criado_em|date:"d/m/Y H:i" }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info mt-4">
+            Nenhum ponto pendente para validação no momento.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('filtro-validacao').addEventListener('submit', function(e){
+    e.preventDefault();
+    // Opcional: Implementar filtros por JS/AJAX conforme seu backend. Aqui mantido estático.
+    alert("Funcionalidade de filtro avançado pode ser implementada.");
+});
+</script>
+{% endblock %}

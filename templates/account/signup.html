@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Conta na Plataforma PANCs</title>
+    <link rel="stylesheet" href="{% static 'mapapanc/css/style.css' %}">
+    <style>
+      body { background: #f7f9fb; font-family: 'Segoe UI', sans-serif; }
+      .login-card { background: #fff; border-radius: 20px; box-shadow: 0 2px 16px #0002; max-width: 400px; margin: 50px auto; padding: 2.5em 2em;}
+      .login-btn { width: 100%; margin-top: 1em; }
+    </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>Criar conta</h2>
+    <form method="POST" action="{% url 'account_signup' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="login-btn" type="submit">Cadastrar</button>
+    </form>
+    <div style="margin-top:1.5em;text-align:center;">
+      <a href="{% url 'account_login' %}">Já tenho conta</a>
+    </div>
+  </div>
+</body>
+</html>

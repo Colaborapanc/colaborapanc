@@ -1,0 +1,161 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Ranking de Usuários{% endblock %}
+
+{% block content %}
+<div class="container painel-ranking py-4">
+
+    <!-- Cabeçalho e navegação -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">
+            <span class="bi bi-bar-chart-line-fill text-success me-2"></span>
+            Ranking de Usuários
+        </h2>
+        <a href="{% url 'painel_gamificacao' %}" class="btn btn-outline-secondary">
+            &larr; Voltar ao Painel
+        </a>
+    </div>
+
+    <!-- Filtros -->
+    <form method="get" class="row g-2 mb-4 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label mb-1 small">Visualização</label>
+            <select name="tipo_ranking" class="form-select">
+                <option value="geral" {% if tipo_ranking == "geral" %}selected{% endif %}>Geral</option>
+                <option value="revisores" {% if tipo_ranking == "revisores" %}selected{% endif %}>Revisores</option>
+                <option value="meu_grupo" {% if tipo_ranking == "meu_grupo" %}selected{% endif %}>Meu Grupo</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label mb-1 small">Buscar usuário/grupo</label>
+            <input type="text" name="busca" class="form-control" placeholder="Buscar..." value="{{ request.GET.busca }}">
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success w-100" type="submit">
+                <i class="bi bi-search"></i> Filtrar
+            </button>
+        </div>
+        <div class="col-md-2">
+            <button id="btn-flutuar" class="btn btn-warning w-100 fw-bold" type="button">
+                <i class="bi bi-rocket-takeoff"></i> Ir para minha posição
+            </button>
+        </div>
+    </form>
+
+    <!-- Mensagem de incentivo -->
+    <div class="alert alert-info text-center mb-4 fs-6">
+        {% if tipo_ranking == "revisores" %}
+            <span class="bi bi-award-fill text-warning"></span>
+            Revisores ativos ganham insígnias douradas! Participe das validações para subir no ranking.
+        {% else %}
+            <span class="bi bi-emoji-sunglasses text-success"></span>
+            Colabore mais e suba no ranking! Top 10 desbloqueia badges especiais.
+        {% endif %}
+    </div>
+
+    <!-- Tabela do Ranking -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle bg-white rounded-3 shadow-sm">
+            <thead class="table-success">
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Usuário</th>
+                    <th>Pontuação</th>
+                    <th>Nível</th>
+                    <th>Conquistas</th>
+                    <th>Grupo</th>
+                    <th class="text-center">Badges</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in ranking %}
+                <tr class="{% if user.posicao <= 3 %}table-warning fw-bold{% elif user.is_me %}table-info{% endif %}">
+                    <td class="text-center fs-4">
+                        {% if user.posicao == 1 %}
+                            🥇
+                        {% elif user.posicao == 2 %}
+                            🥈
+                        {% elif user.posicao == 3 %}
+                            🥉
+                        {% else %}
+                            {{ user.posicao }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="bi bi-person-circle text-success me-2"></span>
+                        {% if user.is_me %}<span class="badge bg-primary me-1">Você</span>{% endif %}
+                        {{ user.nome }}
+                        {% if user.is_revisor %}
+                            <span class="badge bg-warning text-dark ms-1">Revisor</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="fw-bold">{{ user.pontos }}</span>
+                        <small class="text-muted">pts</small>
+                    </td>
+                    <td>
+                        <span class="badge bg-success">{{ user.nivel|default:"-" }}</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-light border">{{ user.qtd_conquistas }} conquistas</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">{{ user.grupo|default:"-" }}</span>
+                    </td>
+                    <td class="text-center">
+                        {% for badge in user.badges %}
+                            <img src="{{ badge.icone.url }}" alt="{{ badge.nome }}" title="{{ badge.nome }}" width="26"
+                                 style="border-radius:50%; margin: 0 2px; filter: drop-shadow(0 0 4px #e0f6d7);">
+                        {% empty %}
+                            <span class="text-muted">-</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center text-muted py-5">
+                        Nenhum usuário encontrado para esse filtro.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Destaque do usuário logado -->
+    {% if meu_usuario %}
+    <div class="my-4 text-center">
+        <div class="alert alert-primary d-inline-block px-4">
+            <span class="bi bi-emoji-heart-eyes text-info fs-4"></span>
+            Você está na posição <b>{{ meu_usuario.posicao }}</b> com <b>{{ meu_usuario.pontos }}</b> pontos.
+            {% if meu_usuario.posicao > 1 %}
+                <span class="ms-2">Continue colaborando para alcançar o top 1!</span>
+            {% else %}
+                <span class="ms-2 text-success">Parabéns, você está liderando o ranking!</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Dica final divertida -->
+    <div class="mt-5 mb-3">
+        <div class="alert alert-light border d-flex align-items-center">
+            <span class="bi bi-lightbulb text-warning fs-2 me-3"></span>
+            <span>
+                Dica: quem planta badge, colhe reputação! Continue mapeando e validando PANCs para desbloquear surpresas.
+            </span>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %} 
+{% block scripts %}
+{{ block.super }}
+<script>
+
+    // Scroll até sua linha no ranking ao clicar no botão flutuante
+    document.addEventListener("DOMContentLoaded", function () {
+        var btnFlutuar = document.getElementById
+{% endblock %}  

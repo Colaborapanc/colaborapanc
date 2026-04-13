@@ -1,0 +1,20 @@
+{% extends "mapping/base.html" %}
+{% block title %}Editar Conquista{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h2>Editar Conquista</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-2">
+      <label class="form-label">Nome</label>
+      <input type="text" name="nome" class="form-control" value="{{ badge.nome }}" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Descrição</label>
+      <textarea name="descricao" class="form-control" required>{{ badge.descricao }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-warning">Salvar</button>
+    <a href="{% url 'painel_admin_gamificacao' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Painel Administrativo da Gamificação{% endblock %}
+
+{% block content %}
+<div class="container painel-gamificacao-admin py-4">
+
+    <!-- KPIs - Cards -->
+    <div class="row g-3 mb-4">
+        {% for kpi in kpis %}
+        <div class="col-6 col-md-3">
+            <div class="card bg-{{ kpi.cor }} bg-opacity-10 border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <span class="{{ kpi.icone }} fs-1 text-{{ kpi.cor }}"></span>
+                    <div class="fw-bold fs-5 mt-2">{{ kpi.valor }}</div>
+                    <div class="small text-muted">{{ kpi.titulo }}</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-2"><i class="bi bi-bar-chart-fill text-info"></i> Cadastros Mensais</h5>
+                    <canvas id="graficoCadastros"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold mb-2"><i class="bi bi-trophy-fill text-warning"></i> Top Usuários do Mês</h5>
+                    <canvas id="graficoTopUsuarios"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mapa de Pontos -->
+    <div class="mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-2"><i class="bi bi-geo-alt-fill text-success"></i> Mapa dos Pontos Cadastrados</h5>
+                <div id="mapaPontos" style="height: 350px; border-radius: 12px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registros recentes e rankings -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-clock-history"></i> Últimas Ações (Gamificação)</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for h in historico %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><i class="bi bi-person-circle"></i> {{ h.usuario.username }}</span>
+                            <span>{{ h.acao|truncatechars:22 }} <b class="text-success">+{{ h.pontos }}</b></span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Sem registros ainda.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-stars"></i> Missões Recentes</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for m in missoes_recent %}
+                        <li class="list-group-item">{{ m.titulo|truncatechars:32 }}</li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Nenhuma missão.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-trophy"></i> Conquistas Recentes</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for b in conquistas_recent %}
+                        <li class="list-group-item">
+                            {{ b.nome|truncatechars:24 }} 
+                            <span class="text-muted small">({{ b.usuario.username|default:"-" }})</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Nenhuma conquista.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rankings -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-bar-chart"></i> Top 10 Usuários</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for u in ranking_usuarios %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-person"></i> {{ u.usuario.username }}</span>
+                            <span class="badge bg-success rounded-pill">{{ u.pontos }} pts</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Sem usuários.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-award"></i> Top 10 Revisores</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for r in ranking_revisores %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-star-fill text-warning"></i> {{ r.usuario.username }}</span>
+                            <span class="badge bg-primary rounded-pill">{{ r.pontuacao }} pts</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Sem revisores.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedbacks recentes e sugestões -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-chat-dots"></i> Últimos Feedbacks</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for fb in feedbacks_recent %}
+                        <li class="list-group-item">
+                            <b>{{ fb.usuario.username|default:"Anônimo" }}</b>:
+                            <span class="text-muted">{{ fb.mensagem|truncatechars:42 }}</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Nenhum feedback.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-lightbulb"></i> Sugestões da Comunidade</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for s in sugestoes %}
+                        <li class="list-group-item">
+                            <b>{{ s.usuario.username|default:"Anônimo" }}</b>: 
+                            <span class="text-muted">{{ s.titulo|truncatechars:32 }}</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">Nenhuma sugestão.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exportação -->
+    <div class="mb-5">
+        <a href="{% url 'exportar_usuarios_csv' %}" class="btn btn-outline-primary me-2"><i class="bi bi-download"></i> Exportar Usuários (CSV)</a>
+        <a href="{% url 'exportar_pontos_csv' %}" class="btn btn-outline-secondary"><i class="bi bi-download"></i> Exportar Pontos (CSV)</a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Gráfico de Cadastros Mensais
+    var ctxCadastros = document.getElementById('graficoCadastros');
+    if (ctxCadastros) {
+        new Chart(ctxCadastros, {
+            type: 'bar',
+            data: {
+                labels: {{ cadastros_labels|safe }},
+                datasets: [{
+                    label: 'Cadastros',
+                    data: {{ cadastros_data|safe }},
+                    backgroundColor: '#2b9348'
+                }]
+            },
+            options: {responsive: true, plugins: {legend: {display: false}}}
+        });
+    }
+
+    // Gráfico Top Usuários
+    var ctxTopUsuarios = document.getElementById('graficoTopUsuarios');
+    if (ctxTopUsuarios) {
+        new Chart(ctxTopUsuarios, {
+            type: 'pie',
+            data: {
+                labels: {{ top_usuarios_labels|safe }},
+                datasets: [{
+                    data: {{ top_usuarios_data|safe }},
+                    backgroundColor: [
+                        "#42e2b8", "#b4e197", "#f3b700", "#faa613", "#e94f37",
+                        "#6c63ff", "#758ecd", "#43b0f1", "#ef476f", "#ffd166"
+                    ]
+                }]
+            },
+            options: {responsive: true}
+        });
+    }
+
+    // Mapa dos Pontos
+    var mapaPontos = L.map('mapaPontos').setView([-14.2, -51.9], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(mapaPontos);
+
+    var pontosGeoJson = {{ pontos_geojson|safe }};
+    L.geoJSON(pontosGeoJson, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+                radius: 6,
+                fillColor: "#43b0f1",
+                color: "#2563eb",
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.6
+            });
+        },
+        onEachFeature: function (feature, layer) {
+            var popup = "<b>" + feature.properties.nome + "</b><br/>" +
+                        (feature.properties.cidade ? feature.properties.cidade + ", " : "") +
+                        (feature.properties.estado ? feature.properties.estado : "");
+            layer.bindPopup(popup);
+        }
+    }).addTo(mapaPontos);
+});
+</script>
+{% endblock %}

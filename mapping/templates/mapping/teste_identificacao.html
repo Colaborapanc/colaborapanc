@@ -1,0 +1,55 @@
+{% extends "mapping/base.html" %}
+{% block content %}
+<h2>Teste de Identificação Automática de Espécies</h2>
+<p>Envie uma foto da planta. O sistema tentará identificar automaticamente e sugerir o nome científico e populares.</p>
+
+<form id="identificarForm" enctype="multipart/form-data" method="post" style="margin-bottom: 2em;">
+    <label for="foto"><b>Selecione uma imagem:</b></label>
+    <input type="file" id="foto" name="foto" accept="image/*" required>
+    <button type="submit">Identificar Espécie</button>
+</form>
+
+<div id="resultado" style="margin-top:2em;"></div>
+
+<script>
+// Função para tratar envio assíncrono do formulário
+document.getElementById('identificarForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    let fileInput = document.getElementById('foto');
+    if (fileInput.files.length === 0) {
+        alert("Selecione uma imagem para identificar.");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append('foto', fileInput.files[0]);
+    document.getElementById('resultado').innerHTML = "<em>Consultando identificação, aguarde...</em>";
+
+    // Chama a view de identificação automática
+    const resp = await fetch("{% url 'api_identificar_especie' %}", {
+        method: 'POST',
+        body: formData
+    });
+    const data = await resp.json();
+
+    // Mostra o resultado retornado pela API
+    if (data.nome_cientifico) {
+        document.getElementById('resultado').innerHTML = `
+            <div style="padding:1em; background:#e8ffe8; border-radius:6px;">
+                <b>Nome científico sugerido:</b> ${data.nome_cientifico} <br>
+                <b>Nomes populares:</b> ${data.nomes_populares ? data.nomes_populares.join(", ") : "—"} <br>
+                <b>API utilizada:</b> ${data.api_usada || "—"}
+            </div>
+        `;
+    } else {
+        document.getElementById('resultado').innerHTML = `
+            <div style="padding:1em; background:#fff3cd; border-radius:6px;">
+                <span style="color:#c48800;">
+                    ${data.mensagem || "Não foi possível identificar esta espécie. Tente outra imagem ou espécie."}
+                </span>
+            </div>
+        `;
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "mapping/base.html" %}
+{% block title %}Editar Missão{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h2>Editar Missão</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-2">
+      <label class="form-label">Título</label>
+      <input type="text" name="titulo" class="form-control" value="{{ missao.titulo }}" required>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Descrição</label>
+      <textarea name="descricao" class="form-control" required>{{ missao.descricao }}</textarea>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Tipo</label>
+      <select name="tipo" class="form-select" required>
+        <option value="diaria" {% if missao.tipo == 'diaria' %}selected{% endif %}>Diária</option>
+        <option value="semanal" {% if missao.tipo == 'semanal' %}selected{% endif %}>Semanal</option>
+        <option value="especial" {% if missao.tipo == 'especial' %}selected{% endif %}>Especial</option>
+      </select>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Pontos</label>
+      <input type="number" name="pontos" class="form-control" value="{{ missao.pontos }}" required min="1">
+    </div>
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="ativa" id="ativa" {% if missao.ativa %}checked{% endif %}>
+      <label class="form-check-label" for="ativa">Missão ativa</label>
+    </div>
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="{% url 'painel_admin_gamificacao' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

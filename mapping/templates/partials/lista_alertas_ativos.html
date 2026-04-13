@@ -1,0 +1,46 @@
+{% if alertas_ativos %}
+<div class="card shadow-sm my-4">
+    <div class="card-header bg-danger-subtle text-danger fw-bold d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-octagon-fill"></i>
+        Alertas Climáticos Ativos
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for alerta in alertas_ativos %}
+        <li class="list-group-item d-flex flex-wrap align-items-center gap-2 py-2">
+            <!-- Ícone ilustrativo -->
+            {% if alerta.icone %}
+                <img src="{{ alerta.icone }}" width="28" alt="{{ alerta.tipo }}">
+            {% else %}
+                <i class="bi bi-exclamation-triangle-fill fs-5 text-warning"></i>
+            {% endif %}
+            
+            <!-- Informações do alerta -->
+            <div class="flex-grow-1" style="min-width: 180px;">
+                <strong>{{ alerta.tipo }}</strong>
+                <span class="badge badge-pill badge-{{ alerta.severidade|lower }} ms-1 bg-{{ alerta.severidade|lower }}">
+                    {{ alerta.severidade }}
+                </span><br>
+                <small class="text-muted">
+                    {{ alerta.inicio|date:"d/m/Y H:i" }} &rarr; {{ alerta.fim|date:"d/m/Y H:i" }}
+                </small>
+            </div>
+
+            <!-- Link para centralizar o ponto no mapa -->
+            <a href="#map" onclick="focusMarker('{{ alerta.ponto.id }}')" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-geo-alt"></i> Ver no mapa
+            </a>
+
+            <!-- Ações de editar/excluir (somente para administradores) -->
+            {% if user.is_staff %}
+                <a href="{% url 'alerta_editar' alerta.pk %}" class="btn btn-outline-primary btn-sm ms-1">
+                    <i class="bi bi-pencil-square"></i> Editar
+                </a>
+                <a href="{% url 'alerta_excluir' alerta.pk %}" class="btn btn-outline-danger btn-sm ms-1">
+                    <i class="bi bi-trash"></i> Excluir
+                </a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}

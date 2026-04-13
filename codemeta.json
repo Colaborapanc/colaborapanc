@@ -1,0 +1,107 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "ColaboraPANC",
+  "headline": "ColaboraPANC: An Open-Source Citizen Science Platform for AI-Assisted Georeferenced Mapping and Expert Validation of Non-Conventional Food Plants in Brazil",
+  "description": "ColaboraPANC is an open-source collaborative platform for georeferenced mapping of non-conventional food plants (PANCs), integrating AI-assisted identification, expert validation, environmental monitoring, and web/mobile workflows. Its purpose is to improve the scientific usability, traceability, and territorial interpretation of citizen-contributed biodiversity records related to underutilized edible plants in Brazil.",
+  "version": "1.0.0",
+  "license": "https://spdx.org/licenses/MIT",
+  "codeRepository": "https://github.com/warleynutricionista-jpg/colaborapanc",
+  "downloadUrl": "https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.0",
+  "identifier": "https://doi.org/10.5281/zenodo.19546445",
+  "issueTracker": "https://github.com/warleynutricionista-jpg/colaborapanc/issues",
+  "developmentStatus": "active",
+  "applicationCategory": "Scientific/Engineering",
+  "audience": [
+    {
+      "@type": "Audience",
+      "audienceType": "Researchers, biodiversity and food security teams, environmental managers, and citizen science initiatives"
+    },
+    {
+      "@type": "Audience",
+      "audienceType": "Educators, extension projects, NGOs, and technical teams working with edible biodiversity and territorial monitoring"
+    }
+  ],
+  "funding": "This work was supported by CNPq, FAPEMIG, and CAPES. Grant or process numbers were not available at the time of submission.",
+  "keywords": [
+    "citizen science",
+    "biodiversity informatics",
+    "food security",
+    "environmental monitoring",
+    "geospatial systems",
+    "PANC"
+  ],
+  "programmingLanguage": [
+    "Python",
+    "JavaScript"
+  ],
+  "operatingSystem": [
+    "Linux",
+    "macOS",
+    "Windows (via Docker)"
+  ],
+  "softwareRequirements": [
+    "Python >= 3.11",
+    "Django 4.2",
+    "Django REST Framework",
+    "PostgreSQL >= 12",
+    "PostGIS",
+    "GDAL >= 3.0",
+    "Node.js >= 18",
+    "React Native 0.81",
+    "Expo SDK 54"
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Warley Alisson",
+      "familyName": "Souza",
+      "email": "warleyalisson@gmail.com",
+      "@id": "https://orcid.org/0000-0003-2063-1531",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Universidade Federal de Minas Gerais (UFMG), Belo Horizonte, Minas Gerais, Brazil"
+      }
+    },
+    {
+      "@type": "Person",
+      "givenName": "Raquel Linhares Bello de",
+      "familyName": "Araujo",
+      "email": "raquellba.linhares@gmail.com",
+      "@id": "https://orcid.org/0000-0002-5110-5203",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Universidade Federal de Minas Gerais (UFMG), Belo Horizonte, Minas Gerais, Brazil"
+      }
+    },
+    {
+      "@type": "Person",
+      "givenName": "Marinalva Woods",
+      "familyName": "Pedrosa",
+      "email": "marinalva@epamig.br",
+      "@id": "https://orcid.org/0000-0002-4850-7615",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Empresa de Pesquisa Agropecuária de Minas Gerais (EPAMIG), Minas Gerais, Brazil"
+      }
+    },
+    {
+      "@type": "Person",
+      "givenName": "Julio",
+      "familyName": "Onesio-Ferreira Melo",
+      "email": "onesiomelo@gmail.com",
+      "@id": "https://orcid.org/0000-0002-7483-0942",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Universidade Federal de São João del-Rei (UFSJ), Sete Lagoas, Minas Gerais, Brazil"
+      }
+    }
+  ],
+  "maintainer": {
+    "@type": "Person",
+    "givenName": "Warley Alisson",
+    "familyName": "Souza",
+    "email": "warleyalisson@gmail.com",
+    "@id": "https://orcid.org/0000-0003-2063-1531"
+  }
+}

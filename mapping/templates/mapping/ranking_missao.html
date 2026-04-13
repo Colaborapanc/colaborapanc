@@ -1,0 +1,60 @@
+{% extends "mapping/base.html" %}
+{% load static %}
+
+{% block title %}Ranking Missão Colaborativa{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">
+        <span class="bi bi-trophy-fill text-warning"></span>
+        Ranking da Missão
+        <span class="fw-semibold text-dark">"{{ missao.titulo }}"</span>
+    </h2>
+    <div class="mb-3">
+        <span class="badge bg-info text-dark fs-6">{{ missao.get_tipo_display }}</span>
+        <span class="badge bg-secondary">{{ missao.pontos }} pontos</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle table-hover shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Usuário</th>
+                    <th>Data de Conclusão</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in ranking %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <span class="fw-semibold">{{ item.usuario.username }}</span>
+                    </td>
+                    <td>
+                        {% if item.data_conclusao %}
+                            {{ item.data_conclusao|date:"d/m/Y H:i" }}
+                        {% else %}
+                            <span class="text-muted">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.completada %}
+                            <span class="badge bg-success">Concluída</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Em andamento</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-muted text-center">
+                        Ninguém ainda participou desta missão.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

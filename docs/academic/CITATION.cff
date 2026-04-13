@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use ColaboraPANC in your research, please cite it using the metadata below."
+type: software
+title: "ColaboraPANC"
+version: "1.0.0"
+doi: "10.5281/zenodo.19546445"
+date-released: "2026-04-12"
+license: MIT
+repository-code: "https://github.com/warleynutricionista-jpg/colaborapanc"
+url: "https://github.com/warleynutricionista-jpg/colaborapanc"
+abstract: >
+  ColaboraPANC is an open-source collaborative platform for georeferenced mapping
+  of non-conventional food plants (PANCs), integrating AI-assisted identification,
+  expert validation, environmental monitoring, and web/mobile workflows.
+authors:
+  - family-names: "Souza"
+    given-names: "Warley Alisson"
+    orcid: "https://orcid.org/0000-0003-2063-1531"
+    affiliation: "Universidade Federal de Minas Gerais (UFMG), Belo Horizonte, Minas Gerais, Brazil"
+    email: "warleyalisson@gmail.com"
+  - family-names: "Araujo"
+    given-names: "Raquel Linhares Bello de"
+    orcid: "https://orcid.org/0000-0002-5110-5203"
+    affiliation: "Universidade Federal de Minas Gerais (UFMG), Belo Horizonte, Minas Gerais, Brazil"
+    email: "raquellba.linhares@gmail.com"
+  - family-names: "Pedrosa"
+    given-names: "Marinalva Woods"
+    orcid: "https://orcid.org/0000-0002-4850-7615"
+    affiliation: "Empresa de Pesquisa Agropecuária de Minas Gerais (EPAMIG), Minas Gerais, Brazil"
+    email: "marinalva@epamig.br"
+  - family-names: "Onesio-Ferreira Melo"
+    given-names: "Julio"
+    orcid: "https://orcid.org/0000-0002-7483-0942"
+    affiliation: "Universidade Federal de São João del-Rei (UFSJ), Sete Lagoas, Minas Gerais, Brazil"
+    email: "onesiomelo@gmail.com"
+contact:
+  - family-names: "Souza"
+    given-names: "Warley Alisson"
+    email: "warleyalisson@gmail.com"
