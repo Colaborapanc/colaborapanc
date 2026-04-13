@@ -133,8 +133,8 @@ Generative AI was used for grammatical improvements and translation support duri
 
 # SoftwareX metadata table (C1–C9)
 
-- **C1 — Current code version:** 1.0.0
-- **C2 — Permanent link to code/repository used for this code version:** https://doi.org/10.5281/zenodo.19546614
+- **C1 — Current code version:** 1.0.1
+- **C2 — Permanent link to code/repository used for this code version:** https://doi.org/10.5281/zenodo.19546738
 - **C3 — Permanent link to Reproducible Capsule:** N/A
 - **C4 — Legal Code License:** MIT
 - **C5 — Code versioning system used:** Git
@@ -145,8 +145,8 @@ Generative AI was used for grammatical improvements and translation support duri
 
 # Availability and archiving
 
-- **GitHub release used for this version:** https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.0
-- **Archival DOI:** https://doi.org/10.5281/zenodo.19546614
+- **GitHub release used for this version:** https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.1
+- **Archival DOI:** https://doi.org/10.5281/zenodo.19546738
 - **Archival platform:** Zenodo
 
 # Recommended figures for manuscript assembly

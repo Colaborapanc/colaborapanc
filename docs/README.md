@@ -23,8 +23,8 @@ Both canonical sets should keep equivalent scope and depth.
 - **Testing (EN):** [`docs/en/testes.md`](./en/testes.md)
 - **Citation (EN):** [`docs/en/citation.md`](./en/citation.md)
 - **Citation (PT-BR):** [`docs/pt-BR/citacao.md`](./pt-BR/citacao.md)
-- **Software release/tag 1.0.0:** https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.0
-- **Archival DOI:** https://doi.org/10.5281/zenodo.19546614
+- **Software release/tag 1.0.1:** https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.1
+- **Archival DOI:** https://doi.org/10.5281/zenodo.19546738
 - **SoftwareX preparation package:** [`submission/softwarex/`](../submission/softwarex/README.md)
 
 ## Academic and editorial materials

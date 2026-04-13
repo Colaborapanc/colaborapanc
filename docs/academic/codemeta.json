@@ -3,7 +3,7 @@
   "@type": "SoftwareSourceCode",
   "name": "ColaboraPANC",
   "description": "Open-source collaborative platform for AI-assisted geo-referenced mapping, human-in-the-loop expert validation, and territorial prioritisation of Non-Conventional Food Plants (PANCs) in Brazil.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "dateCreated": "2024-01-01",
   "datePublished": "2026-01-22",
   "dateModified": "2026-01-22",

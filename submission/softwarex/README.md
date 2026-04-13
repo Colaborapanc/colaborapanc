@@ -12,6 +12,6 @@ This folder consolidates editorial artifacts for the ColaboraPANC SoftwareX subm
 ## Core identifiers
 
 - Software: **ColaboraPANC**
-- Version: **1.0.0**
-- DOI: **https://doi.org/10.5281/zenodo.19546445**
-- Release: **https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.0**
+- Version: **1.0.1**
+- DOI: **https://doi.org/10.5281/zenodo.19546738**
+- Release: **https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.1**
