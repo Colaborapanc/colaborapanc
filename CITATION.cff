@@ -16,12 +16,6 @@ authors:
     affiliation: "Universidade Federal de Minas Gerais (UFMG), Belo Horizonte, Minas Gerais, Brazil"
     email: "warleyalisson@gmail.com"
 
-  - family-names: "Araujo"
-    given-names: "Raquel Linhares Bello de"
-    orcid: "https://orcid.org/0000-0002-5110-5203"
-    affiliation: "Universidade Federal de Minas Gerais (UFMG), Belo Horizonte, Minas Gerais, Brazil"
-    email: "raquellba.linhares@gmail.com"
-
   - family-names: "Pedrosa"
     given-names: "Marinalva Woods"
     orcid: "https://orcid.org/0000-0002-4850-7615"
@@ -33,6 +27,11 @@ authors:
     orcid: "https://orcid.org/0000-0002-7483-0942"
     affiliation: "Universidade Federal de São João del-Rei (UFSJ), Sete Lagoas, Minas Gerais, Brazil"
     email: "onesiomelo@gmail.com"
+  - family-names: "Araujo"
+    given-names: "Raquel Linhares Bello de"
+    orcid: "https://orcid.org/0000-0002-5110-5203"
+    affiliation: "Universidade Federal de Minas Gerais (UFMG), Belo Horizonte, Minas Gerais, Brazil"
+    email: "raquellba.linhares@gmail.com"
 
 contact:
   - family-names: "Souza"
