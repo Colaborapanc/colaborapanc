@@ -1,6 +1,6 @@
 ---
 title: 'ColaboraPANC: An Open-Source Citizen Science Platform for AI-Assisted Georeferenced Mapping and Expert Validation of Non-Conventional Food Plants in Brazil'
-subtitle: 'Internal editorial draft for SoftwareX preparation (not the official journal template)'
+subtitle: 'Internal editorial draft for  preparation (not the official journal template)'
 tags:
   - Python
   - JavaScript
