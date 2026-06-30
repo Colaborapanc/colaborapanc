@@ -77,7 +77,7 @@ flake8 mapping/ config/ tests/ --max-line-length=120 --exclude=mapping/migration
 ## Citation, release, and DOI
 
 - **Software name:** ColaboraPANC
-- **Version:** 1.0.1
+- **Version:** 1.0.2
 - **Release tag:** https://github.com/warleynutricionista-jpg/colaborapanc/releases/tag/1.0.2
 - **Archival DOI (Zenodo):** https://doi.org/10.5281/zenodo.19582745.
 - **Preferred citation metadata:** [`CITATION.cff`](./CITATION.cff)
